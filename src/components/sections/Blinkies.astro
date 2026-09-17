@@ -1,0 +1,28 @@
+---
+import { Image } from "astro:assets";
+
+import bestpc from "../../assets/blinkies/bestpc.gif";
+import bookmark from "../../assets/blinkies/bookmark-this-page.gif";
+import codedByHuman from "../../assets/blinkies/coded-by-a-human.png";
+import responsive from "../../assets/blinkies/responsivesite.jpg";
+import vscode from "../../assets/blinkies/vscode.png";
+import deleteTiktok from "../../assets/blinkies/deletetiktok.webp";
+import introvert from "../../assets/blinkies/introvert.gif";
+import transrights from "../../assets/blinkies/transrights.gif";
+---
+
+<div class="sidebar-section">
+  <center>
+    <Image src={bestpc} alt="Best viewed on the Computer" />
+    <Image src={bookmark} alt="Bookmark this page" />
+    <Image src={codedByHuman} alt="Coded by a human!" />
+    <Image src={responsive} alt="Responsive Website" />
+    <Image src={vscode} alt="Made with Visual Studio Code" />
+  </center>
+
+  <center>
+    <Image src={deleteTiktok} alt="Delete TikTok" width={150} />
+    <Image src={introvert} alt="Introvert" width={150} />
+    <Image src={transrights} alt="Trans Rights" width={150} />
+  </center>
+</div>

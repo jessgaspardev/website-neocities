@@ -1,0 +1,209 @@
+---
+const LETTERBOXD_USERNAME = "amandaseyfrieds";
+const MAX_FILMS = 4;
+
+interface Film {
+  name: string;
+  stars: string;
+  href: string;
+  poster: string;
+}
+
+function extractTag(itemXml: string, tag: string): string {
+  const match = itemXml.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, "i"));
+  if (!match) return "";
+  const content = match[1].trim();
+  const cdata = content.match(/^<!\[CDATA\[([\s\S]*?)\]\]>$/);
+  return cdata ? cdata[1] : content;
+}
+
+function extractItems(xml: string): string[] {
+  const items: string[] = [];
+  const re = /<item>([\s\S]*?)<\/item>/g;
+  let m;
+  while ((m = re.exec(xml)) !== null) items.push(m[1]);
+  return items;
+}
+
+let films: Film[] = [];
+let loadError = false;
+
+try {
+  const res = await fetch(`https://letterboxd.com/${LETTERBOXD_USERNAME}/rss/`, {
+    headers: {
+      // unidentified bot traffic from build servers more aggressively.
+      "User-Agent": "Mozilla/5.0 (compatible; PersonalSiteBuild/1.0)",
+    },
+  });
+  if (!res.ok) throw new Error(`Letterboxd responded ${res.status}`);
+  const xml = await res.text();
+
+  films = extractItems(xml)
+    .slice(0, MAX_FILMS)
+    .map((item) => {
+      const rawTitle = extractTag(item, "title");
+      const dashIdx = rawTitle.lastIndexOf(" - ");
+      const rawName = dashIdx === -1 ? rawTitle : rawTitle.slice(0, dashIdx);
+      const stars = dashIdx === -1 ? "" : rawTitle.slice(dashIdx + 3);
+
+      const description = extractTag(item, "description");
+      const posterMatch = description.match(/<img[^>]+src="([^"]+)"/);
+
+      return {
+        name: rawName.replace(/,\s*\d{4}$/, ""),
+        stars,
+        href: extractTag(item, "link") || `https://letterboxd.com/${LETTERBOXD_USERNAME}/`,
+        poster: posterMatch ? posterMatch[1] : "",
+      };
+    });
+} catch (err) {
+  console.error("Letterboxd widget: build-time fetch failed:", err);
+  loadError = true;
+}
+---
+
+<div class="lb-widget">
+  <div class="lb-widget__head">
+    <h3 class="lb-widget__title">Recently watched</h3>
+    <a class="lb-widget__link" href={`https://letterboxd.com/${LETTERBOXD_USERNAME}/`} target="_blank" rel="noopener noreferrer">on Letterboxd →</a>
+  </div>
+  <div class="lb-sprockets"></div>
+  <div class="lb-strip">
+    {loadError || films.length === 0 ? (
+      <p class="lb-status lb-status--error">
+        Couldn't load recent films at build time.{" "}
+        <a href={`https://letterboxd.com/${LETTERBOXD_USERNAME}/`} target="_blank" rel="noopener noreferrer">View the diary directly →</a>
+      </p>
+    ) : (
+      films.map((film) => (
+        <a class="lb-film" href={film.href} target="_blank" rel="noopener noreferrer" title={film.name}>
+          <div class="lb-film__frame">
+            {film.poster && <img src={film.poster} alt={film.name} loading="lazy" />}
+          </div>
+          <div class="lb-film__text">
+            <span class="lb-film__name">{film.name}</span>
+            {film.stars && <span class="lb-film__rating">{film.stars}</span>}
+          </div>
+        </a>
+      ))
+    )}
+  </div>
+  <div class="lb-sprockets"></div>
+</div>
+
+<style>
+  .lb-widget {
+    --lb-bg: #17120f;
+    --lb-bg-strip: #1f1815;
+    --lb-hole: #0c0908;
+    --lb-frame: #2c2420;
+    --lb-text: #f2e9dc;
+    --lb-text-dim: #a99c8c;
+    --lb-amber: #e2a33d;
+
+    width: 100%;
+    max-width: 300px;
+    background: var(--lb-bg);
+    color: var(--lb-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding: 14px 0 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .lb-widget *, .lb-widget *::before, .lb-widget *::after { box-sizing: inherit; }
+
+  .lb-widget__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 12px 10px;
+  }
+  .lb-widget__title {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .lb-widget__link {
+    font-size: 0.68rem;
+    color: var(--lb-text-dim);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+  }
+  .lb-widget__link:hover { color: var(--lb-amber); border-bottom-color: var(--lb-amber); }
+
+  .lb-sprockets {
+    height: 8px;
+    background: var(--lb-bg-strip);
+    background-image: radial-gradient(circle, var(--lb-hole) 2.2px, transparent 2.4px);
+    background-size: 16px 8px;
+    background-position: 8px center;
+  }
+
+  .lb-strip {
+    background: var(--lb-bg-strip);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lb-film {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .lb-film__frame {
+    flex: 0 0 34px;
+    width: 34px;
+    aspect-ratio: 2 / 3;
+    border: 2px solid var(--lb-frame);
+    border-radius: 2px;
+    overflow: hidden;
+    background: #000;
+    transition: border-color 0.15s ease;
+  }
+  .lb-film:hover .lb-film__frame { border-color: var(--lb-amber); }
+  .lb-film__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .lb-film__text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .lb-film__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.74rem;
+    line-height: 1.25;
+    color: var(--lb-text);
+    transition: color 0.15s ease;
+  }
+  .lb-film:hover .lb-film__name { color: var(--lb-amber); }
+  .lb-film__rating {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.68rem;
+    color: var(--lb-amber);
+    letter-spacing: 0.02em;
+  }
+
+  .lb-status {
+    padding: 6px 12px 2px;
+    font-size: 0.76rem;
+    color: var(--lb-text-dim);
+  }
+  .lb-status--error { color: #d98a6a; }
+  .lb-status a { color: var(--lb-amber); }
+</style>

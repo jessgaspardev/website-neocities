@@ -1,0 +1,41 @@
+---
+// widgets
+import GoodReads from "../widgets/GoodReads.astro";
+import Hitcounter from "../widgets/Hitcounter.astro";
+import Imood from "../widgets/Imood.astro";
+import Steam from "../widgets/Steam.astro";
+import Lastfm from "../widgets/Lastfm.astro";
+import Letterboxd from "../widgets/Letterboxd.astro";
+---
+
+<aside class="right-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Feeling</div>
+    <Imood />
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">🎮 Playing</div>
+    <Steam />
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">📚 Reading</div>
+    <GoodReads />
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">📽️ Watching</div>
+    <Letterboxd />
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">🎧 Listening</div>
+    <Lastfm />
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">Hitcounter</div>
+    <Hitcounter />
+  </div>
+</aside>

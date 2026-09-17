@@ -1,0 +1,61 @@
+<nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li>  
+        	<details>
+            <summary>Developer Work</summary>
+            <ul>
+              <li><a href="/work/websites">Websites</a></li>
+              <li><a href="/work/apps">Web Apps</a></li>
+              <li><a href="/work/experiments">Experiments</a></li>
+            </ul>
+          </details>
+      </li>
+      <li>  
+        	<details>
+            <summary>Personal</summary>
+            <ul>
+              <li><a href="/about">About me</a></li>
+              <li><a href="/art">Art</a></li>
+              <li><a href="/now">Now</a></li>
+              <li><a href="/contact">Contact me</a></li>
+            </ul>
+          </details>
+      </li>
+      <li>  
+        	<details>
+            <summary>Resources</summary>
+            <ul>
+              <li><a href="/tools">Tools I Use</a></li>
+              <li><a href="/links">Links</a></li>
+            </ul>
+          </details>
+      </li>
+      <li>  
+        	<details>
+            <summary>This Website</summary>
+            <ul>
+              <li><a href="/tools">About the site</a></li>
+              <li><a href="/roadmap">Roadmap</a></li>
+              <li><a href="/credits">Credits</a></li>
+            </ul>
+          </details>
+      </li>
+    </ul>
+</nav>
+
+<script>
+(function () {
+  var mq = window.matchMedia('(min-width: 801px)');
+  var detailsEls = document.querySelectorAll('nav details');
+
+  function applyState(e) {
+    detailsEls.forEach(function (d) {
+      d.open = e.matches; 
+    });
+  }
+
+  applyState(mq);                    // run once on load
+  mq.addEventListener('change', applyState); // re-run on resize/rotate
+})();
+</script>

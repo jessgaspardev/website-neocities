@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { getCollection } from "astro:content";
+
+const websites = await getCollection('work', ({data}) => {
+    return data.type === 'website';
+});
+
+import WorkCard from "../../components/cards/WorkCard.astro";
+---
+
+<Layout>
+    <h1>Websites I've Built</h1>
+    {websites.map((site) => (
+        <WorkCard 
+            image={site.data.image}
+            image2={site.data.image2}
+            image3={site.data.image3}
+            image4={site.data.image4}
+            title={site.data.title}
+            description={site.data.description}
+            link={site.data.link}
+            year={site.data.year}
+        />
+    ))}
+</Layout>

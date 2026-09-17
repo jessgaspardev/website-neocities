@@ -1,23 +1,39 @@
+---
+// styling
+import '../styles/global.css';
+// components
+import BaseHead from "../components/global/BaseHead.astro";
+import Header from "../components/global/Header.astro";
+import LeftSidebar from "../components/global/LeftSidebar.astro";
+import RightSidebar from '../components/global/RightSidebar.astro';
+import Footer from "../components/global/Footer.astro";
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
+	<BaseHead />
 	<body>
-		<slot />
+		<!-- The next line is a skip-to-content link for keyboard users. -->
+    	<a href="#content" id="skip-to-content-link">Skip to content</a>
+		<div class="layout">
+			<Header />
+			<LeftSidebar />
+			<main id="content">
+				<section>
+					<slot />
+				</section>
+			</main>
+			<RightSidebar />
+			<Footer />
+		</div>
 	</body>
 </html>
 
+
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 	}
 </style>

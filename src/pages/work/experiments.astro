@@ -1,0 +1,29 @@
+---
+import Layout from "../../layouts/Layout.astro"
+
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+const websites = await getCollection('work', ({data}) => {
+    return data.type === 'experiment';
+});
+
+
+---
+
+<Layout>
+    <h1>Coding Experiments</h1>
+    <p>Or just stuff built for fun</p>
+    {websites.map((site) => (
+    <div class="work-card">
+        <div>
+                <Image src={site.data.image} alt={site.data.title} height={300} /> 
+        </div> 
+    <div>
+        <h2>{site.data.title}</h2>
+        <p>{site.data.description}</p>
+        <a href=`${site.data.link}` target="_blank">Live Website</a>
+        <p>Year: {site.data.year}</p>
+    </div>
+</div>
+    ))}
+</Layout>
