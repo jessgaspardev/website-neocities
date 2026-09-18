@@ -1,0 +1,44 @@
+---
+import Layout from "../layouts/Layout.astro"
+import { Image } from "astro:assets";
+import about from "../assets/images/aboutpic.jpg"
+---
+
+<Layout>
+    <h1>About me</h1>
+    <p>I’m a nerd who has been building and breaking websites since I was a kid in the early 2000s. I wrote my first lines of HTML and CSS code to customize my Hi5 profile (at the time it was the MySpace equivalent that was popular where I live), and that planted the coding bug in me  at an early age. Discovering the indie web and neocities has healed something in my developer heart. Making this website made me feel like I was 12 years old again.</p>
+    <div class="details">
+        <Image src={about} alt="Me" class="image" />
+        <div>
+            <h4>Details</h4>
+            <ul>
+                <li>my name is <mark>jess</mark> and my pronouns are <mark>she/her</mark>;</li>
+                <li>I was born in <mark>1994</mark> on <mark>June 4th</mark>;</li>
+                <li>Yes, I'm a <mark>gemini</mark>, but please don't hold that against me! <mark>#NotAllGemini</mark>;</li>
+                <li>I'm <mark>portuguese</mark>;</li>
+                <li>I'm a cis <mark>lesbian</mark>;</li>
+                <li>I'm an <mark>introvert</mark> and quite shy when meeting new people (even online), but once I'm comfortable with someone I love to hang out and talk;</li>
+                <li>I have 2 cats, 1 dog and 1 goat;</li>
+                <li>Main <mark>hobbies</mark>: gaming, drawing & painting, reading, watching movies, watching women's basketball, coding</li>
+            </ul>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .image {
+        border: 1px solid yellowgreen;
+        padding: 4px;
+    }
+
+    .details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+</style>

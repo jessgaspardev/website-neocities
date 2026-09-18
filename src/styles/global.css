@@ -17,8 +17,8 @@
   /* Text Colors: */
   --text-color: #f5efe6;
   --sidebar-text-color: #f5efe6;
-  --link-color: #f0c040;
-  --link-color-hover: #4389ff;
+  --link-color: greenyellow;
+  --link-color-hover: orange;
 
   /* Text: */
   --font: "Space Mono", monospace;
@@ -57,6 +57,23 @@ body {
   
 }
 
+/* -------------------------------------------------------- */
+/* CURSOR */
+/* -------------------------------------------------------- */
+ 
+@keyframes rwdcur202165 {
+0%,14.185714285714%,100% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABsUlEQVRYhe2WMW7CQBREx1GQgsQB0lIhRUpqDsARkgPYRco0PkgkOADHSWpTuUrLASxtFEeZFPbiXXv3sxgTKDKSAWF2//P8+TYAQFyAzg+hioznBuGlQfwJSOSBAACMJw++3wymK+lkDSK5cbRLvqvbuaAluEFhn94AfSD27eeU2IK2jJb4NHhwqYqsmoyEREJpSnpNzz4Hotr2ncYv90BClxum/cEQoT2jKrKquCG13Lhy4YNyKjQDHSd2ELITe+UDcFqolptQCHMfMRviGDrOd0bTlNEOXwY69aQW6I0se3UrbiavnQVtJ4gYRCyUCM+AE8IFoooMlkvpGkwB5sCinPe6T3jnXhUZibi5V7R6zrQ+cnBRzomEXE3L4SEcN6cGwCx+98WtDXAQjAjh+p45uPgxiuvDgLg+AMBMt/R41kmPohmA5I2r9xKPnyOA38D4+MdFp9eOw5K+4u20PMoBLX2FrF7qMUvX1fszEM3sBbcfo2b+1XB/sKqgIbbTXvdcWOP63B8AYWk/iRqAMxS3ZBWvAQwIEWawRKymJZ+AZsxUZIfvxAAEELWtDwH41y+ktFlmZYJbPQAAAABJRU5ErkJggg==) 0 0, auto;}
+14.285714285714%,28.471428571429% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABz0lEQVRYhc2XvU7DMBSFj5FAVOrExJouSEgwMzDyAH2FZmGCpc+BkNqdV4DH6JxKSGWgI5k6RbJUS1yGJI4TX7upSX+OlKVJ7C/nnnuTAgDhCHR4CJkldGgQOjaIvYAIBwQAoNe/dV3TmU58JwsQnxv/dsn1dNqFUh43yLNOMEAIxKb1WHlL0JRREpc6Dy7JLMk7IyZCTL4uCeqeTQ6Iwnat3vMNEBPnhml/a4i2NSOZJfnmhuRkzuXCBcWqbQYsJzSE34mNcgGwFsrJvC2EuY43G942ZM5brWnKKIcrA9Z+vhKUC9XsLUtx3n+1bmg6kUYKPwN/HttmgIXgQGSWwHTp8jsGYQQaA7QImxPOvpdZQoRRNSsaNSeM8mMMogXo4fcunyf8g4VDMMOpAig2j9SQEBNNr9fB09ILwf1ubX6/zg8DYpt3QXPYuMaxvl68QAwGQywf3zGdKWBlL7rVywiOtm0MqRrU8vRDTGcKT59n7L3bApQQerE0UkgjlSe9SHtTtc0ZF0JFACiNlJX2SA338j1Zb7f2ae8MrgIIbzXq5IuXFiCd9q8q7a7gmQoJoSVxBaFbDQAubMadAgAA3kT+tCtwSd/pf4ujUPCX8h9b5UOWaOhbEAAAAABJRU5ErkJggg==) 0 0, auto;}
+28.571428571429%,42.757142857143% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABsklEQVRYhc2XMW7CQBBF/6IUQaJPndZSUlNQkiNwAKwoSZWGg0SCHi5ClyKpjRQpN+AAllZywU+B7ezau+O1YwJfotn1zjz+zKwBAIgL0PkhdJrw3CC8NIh/AVEeCADAcHTve6Y3DaTNHERy488u+b5d6UIhwQ0KcToDdIFoiueUWIKqjJL41HvjUqfJcTJiEjGlKek0PU0OqNz2UsPXOyCmyw3T/mCI0JpRp8kxuSG93Ln6wgflVGgP1JwoIWQnGuUDcFqol7tQCDOO2BviGDr2a6NpyiiHrwdq+aQSFIEse4tSXI/eageqTqyiDKsoE1KE94ATwgWi0wSmSzMA+ygDMQcXztENSu6ce50mJOa/d0Wl5vso4z7KSMzJBchvcHoYd7qsRAjH5VQCWMmzyfFC6ygRwrXuTF58crV5F1QvG991XD6vsFF4Ah5uJ9i+vDcGDVWIhXbcmMRaKcv+tVIAcNUBoAhOAOWYzfLFm69nKGzsE3myvkUAXOWdXm24UyR0AuAE3d4a4BzJbZKGUTOAa0d7a47pYczt44e9GNB8rX4TStoOPk/6/+Gi1dRw4v4PzGdAMPWtNfQAAAAASUVORK5CYII=) 0 0, auto;}
+42.857142857143%,57.042857142857% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABuUlEQVRYhdWXPU7DQBSExxGRiJQDpAwrISqocwDoU9LGBSVNzoGwchIOQJGS2qlSkTIHsOQiKEPh2KzXbzdrY5Mwkhv/7Psyb97aAQDiDHR6iDSJeWoQnhvEn4AEFggAwGB4Z7unNfVcFw8gLjd+7ZLt1xUu5HK4Qcc6jQGaQBxbT5SzBaa0ltjUenCZJnE2GSGJkK4paTQ9xxwIDrYXGjzfAiElN3T7vSF8e8Y0ibPimtLFSsqFDUqUbwYqThQQbieOygYgWpguVr4Q+jrObDjHULheGU1dWjtsGajUc7UgX6hkb96Ky+Fr5YGKEyGzwyHfDIgQEkiaxNBdipZApIjteAdi1mifsM59msQkZj97hdHzSJGRIrfjHYkZOQe5Lq3jDeSEEDanAsAsfr+fNN4tnRDSeal4fuQ3XdQA0NPtej3nSQ9Gmz44B/EEPFxPxAdqvYxgGVtjkyrBBS8IlJrivfchPlvHARMiK3QYs2iZnXzcf2G06Zce+Oy/dfJVlfU9pJj2LgrKAJa0X+2mnX83FAA1i7cvs3h+GLCiWgsH16BS09I5n/DVHUOxNgAEN93+f/g3qh2+bwkWQAX8lAmoAAAAAElFTkSuQmCC) 0 0, auto;}
+57.142857142857%,71.328571428571% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABiUlEQVRYhc2WMXLCMBBFv1OFGQ6hzlVyFq6Ai6RLw0HCcJHcxVR0KTmAZ1S4+ClsK0JeLUKRAzvjBsu7j79/1wYA4gHi/hC2a3lvED4axL+AVBEIAMBq/Ro7UyyetJsjiKbGn1WK/TunwhSKGlTyZAPkQFzLJ4bagjC8lsSiuHFpu3aYjIZEQ21KsqbnmgLVKLuL1ccL0FBSw5c/GSK1Z7RdOxT3wh6Oki9iUGKkemCmhIPQlbgaMQBRQns4pkL4eVRvqGMo3J+Nph9eO2IemNXTWjAlupB3asXz+nP2QKiE6Tcw/UYpAaZ6QISQQGzXwlfp+/0LaIi9Ic6mD5VJ8kt07m3Xktj+7oqw5+Pu2BvybHoSW3KXt6xUCGE5OYCwOE/521KFkH6Xik9XCQh3aR8xUnEfIOc1mkJ/kZcnsKpRXRSuhzM3vQ295K6AG7WGzu2zB+plvqoIgKbfiG5foqAIgAXcfjNAZvFygAmjFi1WzBzcgXgLkieYr6g7Q+mXcv/DxC0mip79AbIuWUEzaIyyAAAAAElFTkSuQmCC) 0 0, auto;}
+71.428571428571%,85.614285714286% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABnklEQVRYhc1XMU7DQBCcQ0IiUnooDT28xSVtXFDS5B2IKA8gfzJVupQ8wNIVRhqK5OzLeW9tXxySkdzE9u54dmbtAABxBbg8CVuVvDQRXhuJfyFiIiQAALP5S+yayXCjnTwQ0dQ4WaXY0zUqOChqUKmTTCCFRF89EeoIQngjiWFy49JW5T4ZBYmCWkqS0tOngDnI3mD2/gwUlNTw5R9MYujMaKty39yDXX9LvoiREjHUAx0lGhK6Er2IERAltOvvoST8Oqo31BgK5zvR9OGNI+aBTj9tBK7QkbxuFHfzz84NoRLc7g8NQz0gkpCI2KqEr9LjU46szoGCWGVM2hPR3NuqJLFod0Uw86zOmdU5UZCrjPzJahILBrVPJyEsp4ZA2JzL9G2pkpB+l5q7w1005l0QLpvYOm6v/zLmFb+4370By41YdNTLCJHYBkvqiNTD7tZguYH5kO8dS8CRaIq5qGV16/bODZHmp4IAyK3s9nM0FAlgvNsnI9caccKoJaEvahomMwexYBg1z3zRD9eUFIj9DTbaw5z1v8VVo9cHf23RPiugjaSNAAAAAElFTkSuQmCC) 0 0, auto;}
+85.714285714286%,99.9% {cursor:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABmUlEQVRYhc1XMW6DQBCci2IpltwnJR9I3uIyrSlcpvFDYvkD/kLegit3lH4A0hVEmhT4yAF7y0FM8EjXGNgdZmfuMAAQd4D5Sdgi49xEeG8k/oWICZAAACxXb6F7boYH7eKViKbGn1UKvV2tgoOiBpU6owmMIdFXT4Q6gja8kYRwc+PSFlmVjJRESi0lo9LTp4C5yl5j+fEKpJTU8OWPJhE7M9oiq5p7sIeT5IsQKRGxHugoUZPQlehFiIAooT2cYkn4dVRvqDEUrnei6cMbR8gDnX7aCFyhhrxuFE+rz84DbSW4q5aGWA+IJCQitsjQUGkL8Awk5RpIKUU3qrmYe1tkJDa/e0Vr5jxXKynXREruE/KSlKM2K5WEsDnVBNrNic3o3VIlIf0uNXfL3fQ4gIDvbu14dk43+eIL+wR8xzee822w6FDESNioS2xocDT+mxscDTDwNPSK1w1c1Hj23N554DjJV1VltJ3s9ikaigQwgdsHE5ijeRM9UUP4oLrdJ/clKdmOWoz5xqRAxEu+mPT/w10i1mjqfT8I2kO5zoOE3AAAAABJRU5ErkJggg==) 0 0, auto;}
+}
+body, a, a:link, a:visited, a:hover, a:active, summary, button {
+  animation: rwdcur202165 0.46666666666667s linear infinite forwards;
+}
+
 ::selection {
   /* (Text highlighted by the user) */
   background: rgba(0, 0, 0, 0.2);
@@ -90,7 +107,8 @@ a:focus {
 /* -------------------------------------------------------- */
 
 .layout {
-  width: 1400px;
+  max-width: 1440px;
+  width: 100%;
   display: grid;
   grid-gap: var(--margin);
   grid-template: "header header header" auto "leftSidebar main rightSidebar" auto "footer footer footer" auto / var(--sidebar-width) auto var(--sidebar-width);

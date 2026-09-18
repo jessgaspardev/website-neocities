@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+
+const imageFiles = import.meta.glob("../assets/art/*.{jpg,jpeg,png}", { eager: true });
+
+const tagsByFile = {
+  "1.jpeg": "digital painting",
+  "2.jpeg": "digital painting",
+  "3.jpeg": "digital painting",
+  "4.jpeg": "digital painting",
+  "5.jpeg": "digital painting",
+  "6.jpeg": "digital painting",
+  "7.jpeg": "digital painting",
+  "8.jpeg": "digital painting",
+  "9.jpg": "digital painting",
+  "10.jpg": "digital painting",
+  "11.png": "ink and watercolor",
+  "12.png": "ink and watercolor",
+  "13.png": "ink and watercolor",
+  "14.png": "gouache",
+  "15.png": "gouache",
+  "16.png": "ink and watercolor",
+  "17.jpg": "ink and watercolor",
+  "17.png": "ink and watercolor",
+  "18.png": "ink and watercolor",
+  "19.png": "ink and watercolor",
+  "20.png": "ink and watercolor",
+  "21.png": "pencil",
+  "22.png": "pencil",
+  "23.png": "pencil",
+  "24.png": "pencil",
+  "25.png": "ink and watercolor",
+  "26.png": "ink and watercolor",
+};
+
+const images = Object.entries(imageFiles).map(([path, mod]) => {
+  const filename = path.split("/").pop();
+  return {
+    filename,
+    src: mod.default,
+    tags: tagsByFile[filename] ?? "untagged",
+  };
+});
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const shuffledImages = shuffle(images);
+---
+
+<Layout>
+  <h1>Art</h1>
+  <p>I started learning how to draw in 2024, before that I could barely draw a stick figure. The process of learning and just having fun painting and sketching has been so rewarding and it's now one of my favorites hobbies! Even if I'm still a beginner and my art doesn't look amazing, I'm very proud of how much I have learned.</p>
+  <div>
+    <gallery-grid cellwidth="200" cellheight="250" maxperpage="20" filters="tags">
+      {shuffledImages.map(({ src, tags, filename }) => (
+        <Image src={src} alt="" tags={tags} data-file={filename} />
+      ))}
+    </gallery-grid>
+  </div>
+</Layout>
+
+<script src="../scripts/gallery-grid.js"></script>
