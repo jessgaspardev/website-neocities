@@ -1,0 +1,33 @@
+name: Deploy to Neocities
+
+on:
+  push:
+    branches:
+      - main   
+
+concurrency:
+  group: deploy-to-neocities
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install deps and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Neocities
+        uses: bcomnes/deploy-to-neocities@v2
+        with:
+          api_token: ${{ secrets.NEOCITIES_KEY }}
+          cleanup: false
+          dist_dir: dist
