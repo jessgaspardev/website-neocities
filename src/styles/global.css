@@ -571,6 +571,10 @@ main h6 {
 
   }
 
+  .header-title {
+    font-size: 1em;
+  }
+
 
   aside {
     border-bottom: 1px solid;

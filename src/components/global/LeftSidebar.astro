@@ -1,11 +1,13 @@
 ---
 import Navigation from "../global/Navigation.astro";
 import Socials from "../sections/Socials.astro";
-import { Image } from "astro:assets";
 import palestine from "../../assets/blinkies/standwith.png";
-import LinkMeButton from "../widgets/LinkMeButton.astro";
 import Changelog from "../sections/Changelog.astro";
 import Blinkies from "../sections/Blinkies.astro";
+import button from "../../assets/buttons/sitebutton.gif";
+
+import { Image } from "astro:assets";
+import LinkMeButton from "../widgets/LinkMeButton.astro";
 ---
 
 <aside class="left-sidebar">
@@ -27,6 +29,7 @@ import Blinkies from "../sections/Blinkies.astro";
 
   <div class="sidebar-section">
     <div class="sidebar-title">Link me!</div>
-    <LinkMeButton />
+    <center><LinkMeButton /></center>
+    
   </div>
 </aside>
