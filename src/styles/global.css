@@ -112,7 +112,6 @@ a:focus {
   display: grid;
   grid-gap: var(--margin);
   grid-template: "header header header" auto "leftSidebar main rightSidebar" auto "footer footer footer" auto / var(--sidebar-width) auto var(--sidebar-width);
-  /* Confused by the grid? Check out my tutorial: https://petrapixel.neocities.org/coding/positioning-tutorial#grid */
 }
 
 main {
