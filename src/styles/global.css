@@ -1,0 +1,74 @@
+/* -------------------------------------------------------- */
+/* VARIABLES */
+/* -------------------------------------------------------- */
+
+:root {
+  /* Colors: */
+  --black: #101010;
+  --green: #69FFAA;
+  --purple: #B75DE7;
+  --light-pink: #FFAFD8;
+  --dark-pink: #FF39D1;
+  --blue: #5ACEFF;
+  --white: #ffffff;
+
+  /* Text: */
+  --font: 'Iosevka', monospace;
+  --font-size: 15px;
+
+  /* Other Settings: */
+  --margin: 40px;
+  --padding: 20px;
+  --border: 2px solid #c980ff;
+  --round-borders: 4px;
+  --sidebar-width: 300px;
+}
+
+
+/* -------------------------------------------------------- */
+/* GLOBAL */
+/* -------------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+/* -------------------------------------------------------- */
+/* UI */
+/* -------------------------------------------------------- */
+
+mark {
+  /* Text highlighted by using the <mark> element */
+  text-shadow: 1px 1px 5px var(--green);
+  background-color: inherit;
+  color: var(--white);
+}
+
+/* links */
+
+a {
+  text-decoration: underline;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+a,
+a:visited {
+  color: var(--dark-pink);
+}
+
+a:hover,
+a:focus {
+  color: var(--green);
+  text-decoration: none;
+}
+

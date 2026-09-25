@@ -1,40 +1,52 @@
 ---
 // styling
-import '../styles/global.css';
+import "../styles/global.css";
+import "@fontsource/iosevka";
+
 // components
 import BaseHead from "../components/global/BaseHead.astro";
 import Header from "../components/global/Header.astro";
 import LeftSidebar from "../components/global/LeftSidebar.astro";
-import RightSidebar from '../components/global/RightSidebar.astro';
+import RightSidebar from "../components/global/RightSidebar.astro";
 import Footer from "../components/global/Footer.astro";
 ---
 
 <!doctype html>
 <html lang="en">
-	<BaseHead />
-	<body>
-		<!-- The next line is a skip-to-content link for keyboard users. -->
-    	<a href="#content" id="skip-to-content-link">Skip to content</a>
-		<div class="layout">
-			<Header />
-			<LeftSidebar />
-			<main id="content">
-				<section>
-					<slot />
-				</section>
-			</main>
-			<RightSidebar />
-			<Footer />
-		</div>
-	</body>
+  <BaseHead />
+  <body>
+    <!-- The next line is a skip-to-content link for keyboard users. -->
+    <a href="#content" id="skip-to-content-link">Skip to content</a>
+    <div class="layout">
+      <Header />
+      <LeftSidebar />
+      <main id="content">
+        <section>
+          <slot />
+        </section>
+      </main>
+      <RightSidebar />
+      <Footer />
+    </div>
+  </body>
 </html>
 
-
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-</style>
+  .layout {
+    width: 100%;
+    display: grid;
+    grid-gap: var(--margin);
+    grid-template: "header header header" auto "leftSidebar main rightSidebar" auto "footer footer footer" auto / var(
+        --sidebar-width
+      ) auto var(--sidebar-width);
+  }
 
+  main {
+    grid-area: main;
+    overflow-y: auto;
+    padding: var(--padding);
+    background: var(--content-background-color);
+    border: var(--border);
+    border-radius: var(--round-borders);
+  }
+</style>
