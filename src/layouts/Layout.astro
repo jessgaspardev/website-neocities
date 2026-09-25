@@ -31,22 +31,4 @@ import Footer from "../components/global/Footer.astro";
   </body>
 </html>
 
-<style>
-  .layout {
-    width: 100%;
-    display: grid;
-    grid-gap: var(--margin);
-    grid-template: "header header header" auto "leftSidebar main rightSidebar" auto "footer footer footer" auto / var(
-        --sidebar-width
-      ) auto var(--sidebar-width);
-  }
 
-  main {
-    grid-area: main;
-    overflow-y: auto;
-    padding: var(--padding);
-    background: var(--content-background-color);
-    border: var(--border);
-    border-radius: var(--round-borders);
-  }
-</style>
