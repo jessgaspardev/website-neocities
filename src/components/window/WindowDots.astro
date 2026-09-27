@@ -1,0 +1,87 @@
+---
+/**
+ * The three "traffic light" window buttons.
+ *
+ * <WindowDots />                  decorative
+ * <WindowDots interactive />      brighten on hover; each dot has data-dot="close|min|max" for your scripts
+ * <WindowDots muted />            yellow/green dimmed (inactive window look)
+ * <WindowDots closeAttrs={{ "data-modal-close": "" }} />   close dot becomes a real <button>
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  interactive?: boolean;
+  muted?: boolean;
+  /** When set, the close dot renders as a <button> with these attributes. */
+  closeAttrs?: Record<string, string>;
+  closeLabel?: string;
+}
+
+const { interactive = false, muted = false, closeAttrs, closeLabel = "Close", class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["dots", { "dots--interactive": interactive, "dots--muted": muted }, className]} {...rest}>
+  {
+    closeAttrs ? (
+      <button type="button" class="dots__dot dots__close" data-dot="close" aria-label={closeLabel} {...closeAttrs} />
+    ) : (
+      <span class="dots__dot dots__close" data-dot="close" aria-hidden="true" />
+    )
+  }
+  <span class="dots__dot dots__min" data-dot="min" aria-hidden="true"></span>
+  <span class="dots__dot dots__max" data-dot="max" aria-hidden="true"></span>
+</div>
+
+<style>
+  .dots {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dots__dot {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 12px;
+    height: 12px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid;
+    border-radius: 9999px;
+    transition: opacity var(--transition);
+  }
+
+  .dots__close {
+    border-color: var(--dot-close-border);
+    background: var(--dot-close);
+  }
+
+  .dots__min {
+    border-color: var(--dot-min-border);
+    background: var(--dot-min);
+  }
+
+  .dots__max {
+    border-color: var(--dot-max-border);
+    background: var(--dot-max);
+  }
+
+  button.dots__close {
+    cursor: pointer;
+  }
+
+  .dots--interactive .dots__dot {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+
+  .dots--interactive .dots__dot:hover {
+    opacity: 1;
+  }
+
+  .dots--muted .dots__min,
+  .dots--muted .dots__max {
+    opacity: 0.5;
+  }
+</style>

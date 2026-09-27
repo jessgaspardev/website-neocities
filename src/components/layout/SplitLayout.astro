@@ -1,0 +1,87 @@
+---
+/**
+ * Main content with a sidebar on either or both sides (the "explorer"
+ * dashboard: 3/12 + 6/12 + 3/12). Stacks vertically below 1024px in the
+ * order main → left → right.
+ *
+ * <SplitLayout>
+ *   <Card slot="left">…</Card>
+ *   <Stack gap={8}>…main…</Stack>
+ *   <Card slot="right">…</Card>
+ * </SplitLayout>
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, spaceVar } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Left sidebar share of the 12-column grid (default 3). */
+  leftSpan?: number;
+  /** Right sidebar share of the 12-column grid (default 3). */
+  rightSpan?: number;
+  gap?: number;
+  /** Keep the sidebars in view while scrolling (desktop only). */
+  sticky?: boolean;
+}
+
+const { leftSpan = 3, rightSpan = 3, gap = 6, sticky = false, class: className, style, ...rest } = Astro.props;
+
+const hasLeft = Astro.slots.has("left");
+const hasRight = Astro.slots.has("right");
+const mainSpan = 12 - (hasLeft ? leftSpan : 0) - (hasRight ? rightSpan : 0);
+const columns = [hasLeft && leftSpan, mainSpan, hasRight && rightSpan]
+  .filter((span) => span !== false)
+  .map((span) => `minmax(0, ${span}fr)`)
+  .join(" ");
+const vars = `--_cols: ${columns}; --_gap: ${spaceVar(gap)}`;
+---
+
+<div class:list={["split", { "split--sticky": sticky }, className]} style={mergeStyle(vars, style)} {...rest}>
+  <div class="split__main"><slot /></div>
+  {hasLeft && <aside class="split__sidebar split__sidebar--left"><slot name="left" /></aside>}
+  {hasRight && <aside class="split__sidebar split__sidebar--right"><slot name="right" /></aside>}
+</div>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--_gap);
+  }
+
+  .split__sidebar,
+  .split__main {
+    min-width: 0;
+  }
+
+  /* The aside stretches to the row height (grid default); let the slotted
+     panel fill it so sidebars match the main column but never shrink below
+     their own content. */
+  .split__sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .split__sidebar > :global(*) {
+    flex: 1 0 auto;
+  }
+
+  @media (min-width: 1024px) {
+    .split {
+      grid-template-columns: var(--_cols);
+    }
+
+    .split__sidebar--left {
+      order: -1;
+    }
+
+    .split__sidebar--right {
+      order: 1;
+    }
+
+    .split--sticky .split__sidebar {
+      position: sticky;
+      top: var(--space-4);
+      align-self: start;
+    }
+  }
+</style>

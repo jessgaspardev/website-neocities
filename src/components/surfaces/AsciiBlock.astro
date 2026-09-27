@@ -1,0 +1,70 @@
+---
+/**
+ * Preformatted block for ASCII art, logs or code.
+ *
+ * <AsciiBlock text={logoArt} />                       boxed
+ * <AsciiBlock text={bigTitle} bare tone="accent" />   no box (e.g. a giant ASCII heading)
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"pre"> {
+  text?: string;
+  bare?: boolean;
+  tone?: Tone;
+  /** Allow selecting/copying the text (off for decorative art). */
+  selectable?: boolean;
+  size?: "sm" | "md";
+}
+
+const { text, bare = false, tone = "bright", selectable = false, size = "sm", class: className, style, ...rest } = Astro.props;
+---
+
+<pre
+  class:list={["ascii", `ascii--${size}`, { "ascii--box": !bare, "ascii--selectable": selectable }, className]}
+  style={mergeStyle(`--_tone: ${toneVar(tone)}`, style)}
+  {...rest}>{text}<slot /></pre>
+
+<style>
+  .ascii {
+    margin: 0;
+    overflow-x: auto;
+    color: var(--_tone);
+    font-family: var(--font);
+    line-height: var(--leading-tight);
+    white-space: pre;
+    user-select: none;
+  }
+
+  .ascii--selectable {
+    user-select: text;
+  }
+
+  .ascii--sm {
+    font-size: var(--text-tiny);
+  }
+
+  .ascii--md {
+    font-size: var(--text-micro);
+    font-weight: 700;
+  }
+
+  @media (min-width: 640px) {
+    .ascii--sm,
+    .ascii--md {
+      font-size: var(--text-xs);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .ascii--md {
+      font-size: var(--text-sm);
+    }
+  }
+
+  .ascii--box {
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+</style>

@@ -1,32 +1,102 @@
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "../layouts/Layout.astro";
+import Section from "@/components/surfaces/Section.astro";
+import Card from "@/components/surfaces/Card.astro";
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+import Badge from "@/components/feedback/Badge.astro";
 ---
 
-<Layout>
-    <h1>Tools I Use</h1>
-    <p>This is a list of hardware and software I like to use in my day to day, either for work and personal use.</p>
-    <p>Setup:</p>
-    <ul>
-        <li>[Laptop] <mark>HP OMEN 15 AMD Ryzen 7</mark> // I would like to upgrade soon when I have money for it;</li>
-        <li>[<a href="https://linuxmint.com/" target="_blank">Operating System</a>] <mark>Linux Mint - Cinnamon</mark> // It's so awesome;</li>
-        <li>[<a href="https://www.youtube.com/watch?v=AXPw6ctDYH0" target="_blank">Mechanical Keyboard</a>] <mark>Ajazz AK820 Pro</mark> // My pride and joy;</li>
-    </ul>
-    <p>Development:</p>
-    <ul>
-        <li>[<a href="https://code.visualstudio.com/" target="_blank">IDE</a>] <mark>Visual Studio Code</mark> // The most complete coding IDE I've ever used; </li>
-        <li>[<a href="https://www.cloudflare.com/products/pages/" target="_blank">Hosting</a>] <mark>Cloudflare Pages</mark> // Where I host all my static websites (except this one);</li>
-        <li>[<a href="https://astro.build/" target="_blank">Framework</a>] <mark>Astro</mark> // The best for creating static websites of all levels of complexity;</li>
-        <li>[<a href="https://laravel.com/" target="_blank">Framework</a>] <mark>Laravel</mark> // When it comes to full-stack applications, Laravel is my favorite (I love the redemption story of PHP);</li>
-    </ul>
-    <p>Design & Art:</p>
-    <ul>
-        <li>[<a href="https://www.figma.com/" target="_blank">Web Design</a>] <mark>Figma</mark> // Kinda the only viable web design tool option nowadays tbh; </li>
-        <li>[<a href="https://www.affinity.studio/" target="_blank">Graphic Design</a>] <mark>Affinity Suite</mark> // My Adobe replacement;</li>
-        <li>[<a href="https://krita.org" target="_blank">Digital Art</a>] <mark>Krita</mark> // Open-source art program, my favorite;</li>
-    </ul>
-    <p>Organization & Planning:</p>
-    <ul>
-        <li>[<a href="https://obsidian.md/" target="_blank">Notes</a>] <mark>Obsidian</mark> // File-based note-taking and management app. It rocks; </li>
-        <li>[<a href="https://miro.com/" target="_blank">Moodboards</a>] <mark>Miro</mark> // How I plan my projects;</li>
-    </ul>
+<Layout
+  title="Tools"
+  description="List of software I use daily."
+>
+  <Section id="tools" title="TOOLS.JS" subtitle="Tools I use" meta="[LIST]">
+    <p>
+      This is a list of hardware and software I like to use in my day to day,
+      either for work and personal use.
+    </p>
+
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// SETUP" />
+      <ul>
+        <li>
+          <Badge variant="outline">[Laptop]</Badge> HP OMEN 15 AMD Ryzen 7 <span
+            >// I would like to upgrade soon when I have money for it;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Operating System]</Badge> Linux Mint - Cinnamon
+          // <span>It's so awesome;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Mechanical Keyboard]</Badge> Ajazz AK820 Pro <span
+            >// I love typing click clickly click clack;</span>
+        </li>
+      </ul>
+    </Card>
+
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// CODING" />
+      <ul>
+        <li>
+          <Badge variant="outline">[IDE]</Badge> Visual Studio Code <span
+            >// If it ain't broken don't fix it;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Hosting]</Badge> Cloudflare Pages <span
+            >// Where I host all my static websites (except this one which is
+            hosted on Neocities :D);</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Framework]</Badge> Astro <span
+            >The best for creating static websites of all levels of complexity;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Framework]</Badge> Laravel <span>
+            When it comes to full-stack applications, Laravel is my favorite (I
+            despise the "one million dependencies to make it work" that
+            JavaScript-based full stacks require. PHP 4ever);</span>
+        </li>
+      </ul>
+    </Card>
+
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// DESIGN & ART" />
+      <ul>
+        <li>
+          <Badge variant="outline">[Web Design]</Badge> Figma <span
+            >// The only viable web design tool option nowadays unfortunately;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Graphic Design]</Badge> Affinity Suite <span
+            >// My Adobe replacement;</span>
+        </li>
+        <li>
+          <Badge variant="outline">[Digital Art]</Badge> Krita <span
+            >// Open-source art program, my favorite for digital paintings;</span>
+        </li>
+      </ul>
+    </Card>
+
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// ORGANIZATION & PLANNING" />
+      <ul>
+        <li>
+          <Badge variant="outline">[Notes]</Badge> Obsidian <span
+            >// File-based note-taking and management app. It rocks;
+          </span>
+        </li>
+        <li>
+          <Badge variant="outline">[Moodboards]</Badge> Miro <span
+            >// My Adobe replacement;</span>
+        </li>
+      </ul>
+    </Card>
+  </Section>
 </Layout>
+
+<style>
+  span {
+    font-size: var(--text-xs);
+    color: var(--fg-dim);
+  }
+</style>

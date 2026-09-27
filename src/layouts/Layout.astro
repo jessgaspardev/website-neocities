@@ -1,34 +1,153 @@
 ---
-// styling
-import "../styles/global.css";
-import "@fontsource/iosevka";
+import "../styles/tokens.css";
+import "../styles/base.css";
 
-// components
-import BaseHead from "../components/global/BaseHead.astro";
-import Header from "../components/global/Header.astro";
-import LeftSidebar from "../components/global/LeftSidebar.astro";
-import RightSidebar from "../components/global/RightSidebar.astro";
-import Footer from "../components/global/Footer.astro";
+import KeyValueList from "@/components/content/KeyValueList.astro";
+import CRT from "@/components/effects/CRT.astro";
+import CRTToggle from "@/components/effects/CRTToggle.astro";
+import SplitLayout from "@/components/layout/SplitLayout.astro";
+import Stack from "@/components/layout/Stack.astro";
+import RadioButton from "@/components/radio/RadioButton.astro";
+import RadioPlayer from "@/components/radio/RadioPlayer.astro";
+import RadioTicker from "@/components/radio/RadioTicker.astro";
+import SfxToggle from "@/components/sound/SfxToggle.astro";
+import Callout from "@/components/surfaces/Callout.astro";
+import Card from "@/components/surfaces/Card.astro";
+import SystemInfo from "@/components/surfaces/SystemInfo.astro";
+import ThemeSelect from "@/components/theme/ThemeSelect.astro";
+import GameActivity from "@/components/widgets/GameActivity.astro";
+import Goodreads from "@/components/widgets/Goodreads.astro";
+import HitCounter from "@/components/widgets/HitCounter.astro";
+import Letterboxd from "@/components/widgets/Letterboxd.astro";
+import Clock from "@/components/window/Clock.astro";
+import StatusBar from "@/components/window/StatusBar.astro";
+import TerminalWindow from "@/components/window/TerminalWindow.astro";
+
+import { PORTFOLIO_DATA } from "../data/portfolio";
+
+import BaseHead from "@/components/global/BaseHead.astro";
+import Navigation from "@/components/global/Navigation.astro";
+import Socials from "@/components/widgets/Socials.astro";
+import Status from "@/components/widgets/Status.astro";
+
+const { developer } = PORTFOLIO_DATA;
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title,
+  description
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-  <BaseHead />
+<html lang="en" transition:animate="none">
+  <BaseHead title={title} description={description}/>
   <body>
-    <!-- The next line is a skip-to-content link for keyboard users. -->
-    <a href="#content" id="skip-to-content-link">Skip to content</a>
-    <div class="layout">
-      <Header />
-      <LeftSidebar />
-      <main id="content">
-        <section>
-          <slot />
-        </section>
-      </main>
-      <RightSidebar />
-      <Footer />
+    <CRT />
+    <div class="persist" transition:persist="radio-player">
+      <RadioPlayer />
     </div>
+
+    
+
+    <main>
+      <TerminalWindow user="jess@neocities:" path="~/website" branch="main*" minHeight="650px">
+        <div slot="header-actions" class="persist" transition:persist="header-actions">
+          <ThemeSelect />
+          <CRTToggle />
+          <SfxToggle />
+          <RadioButton />
+        </div>
+
+        <Stack gap={6}>
+          <Callout
+            transition:persist="display-notice"
+            variant="warning"
+            icon="⚠️"
+            title="[DISPLAY_NOTICE]: BEST VIEWED ON DESKTOP / PC"
+            dismissible
+            storageKey="demo-mobile-notice"
+            show="mobile"
+          >
+          </Callout>
+
+          <SystemInfo
+            banner={developer.asciiBanner}
+            status={developer.status.trim()}
+            alias={developer.alias}
+            specs={{
+              NAME: developer.specs.name,
+              PRONOUNS: developer.specs.pronouns,
+              LANGUAGES: developer.specs.languages,
+              LIKES: developer.specs.likes,
+              "TECH STACK": developer.specs.techstack,
+              EDITOR: developer.specs.editor,
+            }}
+            label="DEV INFO v2.4"
+          />
+
+          <SplitLayout>
+            <Card slot="left" gap={4}>
+              <Navigation />
+
+              <Socials />
+
+              <KeyValueList
+                divider
+                title="WEBSITE SPEC"
+                items={[
+                  { label: "Hits:", slot: "visits" },
+                  { label: "Online since:", value: "2026", tone: "success" },
+                ]}
+              >
+                <HitCounter slot="visits" />
+              </KeyValueList>
+
+              
+            </Card>
+
+            <Stack gap={8} transition:name="page" transition:animate="fade">
+              <slot />
+            </Stack>
+
+            <Card slot="right" gap={4} transition:persist="right-sidebar">
+
+              <Status />
+
+              <GameActivity />
+
+              <Goodreads />
+
+              <Letterboxd />
+            </Card>
+          </SplitLayout>
+        </Stack>
+
+        <StatusBar slot="footer" transition:persist="status-bar">
+          <span class="hide-mobile">UTF-8</span>
+          <span class="hide-mobile">MODE: GUI</span>
+          <RadioTicker slot="center" />
+          <Fragment slot="right">
+            <Clock />
+            <span class="text-accent"><strong>JESS GASPAR &copy; 2026</strong></span>
+          </Fragment>
+        </StatusBar>
+      </TerminalWindow>
+    </main>
   </body>
 </html>
 
+<style>
+  body {
+    padding: 8px;
+  }
 
+  /* Wrapper that only exists to carry transition:persist; no box of its own. */
+  .persist {
+    display: contents;
+  }
+</style>

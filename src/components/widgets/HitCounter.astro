@@ -1,0 +1,70 @@
+---
+/**
+ * Visit counter backed by the Abacus API (https://abacus.jasoncameron.dev).
+ * Renders a bare number so it picks up the styling of whatever wraps it,
+ * e.g. a KeyValueList row:
+ *
+ * <KeyValueList items={[{ label: "Visits:", slot: "visits" }]}>
+ *   <HitCounter slot="visits" />
+ * </KeyValueList>
+ *
+ * Every page load (including client-side navigations) counts as a hit. The
+ * last known count is shown while the new one loads so the number doesn't
+ * flash back to "---" when the sidebar re-renders.
+ */
+interface Props {
+  namespace?: string;
+  counterKey?: string;
+}
+
+const { namespace = "jessgaspar.dev", counterKey = "hits" } = Astro.props;
+---
+
+<span class="hit-counter" data-hit-counter data-namespace={namespace} data-key={counterKey}>---</span>
+
+<style>
+  .hit-counter {
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  const API = "https://abacus.jasoncameron.dev";
+
+  async function loadCounter(el: HTMLElement) {
+    const { namespace = "", key = "" } = el.dataset;
+    const storageKey = `hits:${namespace}/${key}`;
+
+    try {
+      const cached = sessionStorage.getItem(storageKey);
+      if (cached) el.textContent = cached;
+    } catch {}
+
+    try {
+      const res = await fetch(`${API}/hit/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}`);
+      if (!res.ok) throw new Error(String(res.status));
+      const { value } = (await res.json()) as { value: number };
+      const text = value.toLocaleString("en-US");
+      el.textContent = text;
+      try {
+        sessionStorage.setItem(storageKey, text);
+      } catch {}
+    } catch {
+      if (el.textContent === "---") el.textContent = "???";
+    }
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>("[data-hit-counter]:not([data-loaded])").forEach((el) => {
+      el.dataset.loaded = "";
+      loadCounter(el);
+    });
+  }
+
+  // Run right away: on first visit astro:page-load waits for window "load", so a
+  // slow image or embed would leave the counter stuck on "---". The sidebar is
+  // re-rendered on client-side navigations, so also run after each one; the
+  // data-loaded guard stops the first page from being counted twice.
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

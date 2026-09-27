@@ -1,0 +1,22 @@
+---
+/** Keyboard key. <Kbd>ESC</Kbd> */
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"kbd">;
+const { class: className, ...rest } = Astro.props;
+---
+
+<kbd class:list={["kbd", className]} {...rest}><slot /></kbd>
+
+<style>
+  .kbd {
+    display: inline-block;
+    padding: 1px 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-size: var(--text-tiny);
+    line-height: 1.4;
+  }
+</style>

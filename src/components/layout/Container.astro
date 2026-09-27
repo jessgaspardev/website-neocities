@@ -1,0 +1,43 @@
+---
+/**
+ * Centered page-width wrapper (the theme uses 72rem / 1152px).
+ * <Container maxWidth="60rem">…</Container>
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  maxWidth?: string;
+  /** Horizontal padding. Defaults to 8px on phones, 16px from 640px. */
+  gutter?: boolean;
+}
+
+const { maxWidth = "72rem", gutter = true, class: className, style, ...rest } = Astro.props;
+---
+
+<div
+  class:list={["container", { "container--gutter": gutter }, className]}
+  style={mergeStyle(`--_max: ${maxWidth}`, style)}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .container {
+    width: 100%;
+    max-width: var(--_max);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+
+  .container--gutter {
+    padding-inline: var(--space-2);
+  }
+
+  @media (min-width: 640px) {
+    .container--gutter {
+      padding-inline: var(--space-4);
+    }
+  }
+</style>

@@ -1,0 +1,232 @@
+---
+/**
+ * Recent Goodreads updates: what you're reading, added, or rated.
+ * Fetched from your public Goodreads RSS feed at build time, so it's plain
+ * static HTML and only changes when the site is rebuilt.
+ *
+ *   <Goodreads />
+ *   <Goodreads userId="142704100" limit={5} />
+ */
+import type { HTMLAttributes } from "astro/types";
+import Card from "../surfaces/Card.astro";
+import StatusDot from "../feedback/StatusDot.astro";
+import { fetchGoodreadsUpdates } from "../../lib/goodreads";
+
+interface Props extends HTMLAttributes<"div"> {
+  userId?: string;
+  /** How many updates to show. */
+  limit?: number;
+  profileUrl?: string;
+}
+
+const {
+  userId = "142704100",
+  limit = 3,
+  profileUrl = "https://www.goodreads.com/user/show/142704100-jess",
+  ...rest
+} = Astro.props;
+
+const updates = await fetchGoodreadsUpdates(userId, limit);
+
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const formatDate = (date: Date) =>
+  `${String(date.getDate()).padStart(2, "0")} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+---
+
+<Card interactive="accent" class="books" {...rest}>
+  <div class="books__head">
+    <span class="books__state">
+      <StatusDot />
+      <span>GOODREADS</span>
+    </span>
+    <span class="books__tag">
+      <span class="books__icon" aria-hidden="true">📚</span>
+      <span class="books__badge">UPDATES</span>
+    </span>
+  </div>
+
+  {updates.length === 0 && <div class="books__empty">No recent updates.</div>}
+
+  {
+    updates.map((update) => (
+      <div class="books__body">
+        <div class="books__art">
+          <span aria-hidden="true">📖</span>
+          {update.cover && <img src={update.cover} alt="" loading="lazy" />}
+        </div>
+        <div class="books__text">
+          <div class="books__label">
+            {update.action.toUpperCase()}
+            {update.rating && (
+              <span class="books__stars" aria-label={`${update.rating} out of 5 stars`}>
+                {"★".repeat(update.rating)}
+                {"☆".repeat(5 - update.rating)}
+              </span>
+            )}
+          </div>
+          <a class="books__title" href={update.href} target="_blank" rel="noopener" title={update.title}>
+            {update.title}
+          </a>
+          <div class="books__author">{update.author}</div>
+          <time class="books__date" datetime={update.date.toISOString()}>
+            {formatDate(update.date)}
+          </time>
+        </div>
+      </div>
+    ))
+  }
+
+  <div class="books__foot">
+    <span>PROFILE:</span>
+    <a class="books__link" href={profileUrl} target="_blank" rel="noopener">goodreads ↗</a>
+  </div>
+</Card>
+
+<style>
+  .books__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .books__state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--fg-bright);
+    font-size: var(--text-small);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .books__tag {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .books__icon {
+    display: inline-block;
+    font-size: var(--text-sm);
+    animation: books-bounce 1s infinite;
+  }
+
+  .books__badge {
+    padding: 1px 4px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg-bright);
+    font-size: var(--text-micro);
+    font-weight: 700;
+    letter-spacing: var(--tracking-widest);
+  }
+
+  .books__empty {
+    color: var(--fg-dim);
+    font-size: var(--text-xs);
+  }
+
+  .books__body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .books__art {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 60px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: var(--text-lg);
+  }
+
+  .books__art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .books__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .books__label,
+  .books__title,
+  .books__author {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .books__label {
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .books__stars {
+    margin-left: 6px;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+
+  .books__title {
+    color: var(--fg-bright);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .books__title:hover {
+    text-decoration: underline;
+  }
+
+  .books__author {
+    color: var(--fg);
+    font-size: var(--text-xs);
+  }
+
+  .books__date {
+    color: var(--accent);
+    font-size: var(--text-tiny);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .books__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-1);
+    border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+  }
+
+  .books__link {
+    color: var(--accent);
+  }
+
+  @keyframes books-bounce {
+    0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+    50% { transform: none; animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+  }
+</style>

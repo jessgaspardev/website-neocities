@@ -1,0 +1,239 @@
+---
+/**
+ * Steam stats card: last played game and most played game, with total hours.
+ * Fetched in the browser from a public Steam profile, so the site stays static.
+ *
+ *   <GameActivity />
+ *   <GameActivity steamId="76561198853191750" profileUrl="https://steamcommunity.com/id/cirillas/" />
+ *   <GameActivity rawgKey="your-rawg-api-key" />   cover art from rawg.io
+ * The Steam profile's game details must be public.
+ */
+import type { HTMLAttributes } from "astro/types";
+import Card from "../surfaces/Card.astro";
+import StatusDot from "../feedback/StatusDot.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  steamId?: string;
+  profileUrl?: string;
+  rawgKey?: string;
+}
+
+const {
+  steamId = "76561198853191750",
+  profileUrl = "https://steamcommunity.com/id/cirillas/",
+  rawgKey = "afa9d45e4c4746e58914b4022183d61d",
+  ...rest
+} = Astro.props;
+
+const rows = [
+  { kind: "lastplayed", label: "LAST PLAYED" },
+  { kind: "mostplayed", label: "MOST PLAYED" },
+];
+---
+
+<Card interactive="accent" data-steam={steamId} data-rawg={rawgKey} class="game" {...rest}>
+  <div class="game__head">
+    <span class="game__state">
+      <StatusDot />
+      <span>STEAM</span>
+    </span>
+    <span class="game__tag">
+      <span class="game__icon" aria-hidden="true">🎮</span>
+      <span class="game__badge">STATS</span>
+    </span>
+  </div>
+
+  {
+    rows.map(({ kind, label }) => (
+      <div class="game__body" data-steam-row={kind}>
+        <div class="game__art">
+          <span aria-hidden="true">🎮</span>
+          <img data-steam-field="art" alt="" hidden />
+        </div>
+        <div class="game__text">
+          <div class="game__label">{label}</div>
+          <div class="game__title" data-steam-field="title">Loading…</div>
+          <div class="game__hours" data-steam-field="hours">— hrs</div>
+        </div>
+      </div>
+    ))
+  }
+
+  <div class="game__foot">
+    <span>PROFILE:</span>
+    <a class="game__link" href={profileUrl} target="_blank" rel="noopener">steamcommunity ↗</a>
+  </div>
+</Card>
+
+<style>
+  .game__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .game__state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--fg-bright);
+    font-size: var(--text-small);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .game__tag {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .game__icon {
+    display: inline-block;
+    font-size: var(--text-sm);
+    animation: game-bounce 1s infinite;
+  }
+
+  .game__badge {
+    padding: 1px 4px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg-bright);
+    font-size: var(--text-micro);
+    font-weight: 700;
+    letter-spacing: var(--tracking-widest);
+  }
+
+  .game__body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .game__art {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: var(--text-lg);
+  }
+
+  .game__art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .game__art img[hidden] {
+    display: none;
+  }
+
+  .game__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .game__label,
+  .game__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .game__label {
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .game__title {
+    color: var(--fg-bright);
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .game__hours {
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .game__hours[hidden] {
+    display: none;
+  }
+
+  .game__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-1);
+    border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+  }
+
+  .game__link {
+    color: var(--accent);
+  }
+
+  @keyframes game-bounce {
+    0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+    50% { transform: none; animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+  }
+</style>
+
+<script>
+  import { fetchGameArtByName, fetchSteamGame } from "../../lib/steam";
+
+  document.querySelectorAll<HTMLElement>("[data-steam]").forEach((card) => {
+    const steamId = card.dataset.steam || "";
+    const rawgKey = card.dataset.rawg || "";
+
+    card.querySelectorAll<HTMLElement>("[data-steam-row]").forEach(async (row) => {
+      const q = <T extends HTMLElement = HTMLElement>(name: string) =>
+        row.querySelector<T>(`[data-steam-field="${name}"]`);
+      const els = { art: q<HTMLImageElement>("art"), title: q("title"), hours: q("hours") };
+
+      els.art?.addEventListener("error", () => {
+        if (els.art) els.art.hidden = true;
+      });
+
+      const kind = row.dataset.steamRow === "mostplayed" ? "mostplayed" : "lastplayed";
+      const game = await fetchSteamGame(kind, steamId);
+      if (!game) {
+        if (els.title) els.title.textContent = "Unavailable";
+        if (els.hours) els.hours.hidden = true;
+        return;
+      }
+      if (els.title) {
+        els.title.textContent = game.name;
+        els.title.title = game.name;
+      }
+      if (els.hours) els.hours.textContent = `${game.hours} hrs`;
+
+      const art = await fetchGameArtByName(game.name, rawgKey);
+      if (art && els.art) {
+        els.art.src = art;
+        els.art.hidden = false;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,86 @@
+---
+/**
+ * Status-bar "now playing" ticker for the <RadioPlayer>, with a live ASCII
+ * spectrum. Clicking it opens the radio.
+ * <RadioTicker />
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"button"> {
+  target?: string;
+}
+
+const { target = "radio", class: className, ...rest } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={["ticker", className]}
+  data-radio-ticker
+  data-modal-open={target}
+  title="Open the radio player"
+  {...rest}
+>
+  <span aria-hidden="true">📻</span>
+  <span class="ticker__title" data-ticker-title>RADIO: OFF</span>
+  <span class="ticker__meter" data-ticker-meter aria-hidden="true"></span>
+</button>
+
+<style>
+  .ticker {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 2px var(--space-2);
+    border: 1px solid transparent;
+    background: none;
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-size: inherit;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .ticker:hover {
+    border-color: var(--border);
+    color: var(--accent);
+  }
+
+  .ticker__title {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ticker__meter {
+    color: var(--accent);
+    font-weight: 700;
+    white-space: pre;
+  }
+</style>
+
+<script>
+  const tickers = document.querySelectorAll<HTMLElement>("[data-radio-ticker]");
+  let hasPlayed = false;
+
+  window.addEventListener("radio-change", (e) => {
+    const { track, isPlaying } = (e as CustomEvent).detail || {};
+    if (!track) return;
+    if (isPlaying) hasPlayed = true;
+    if (!hasPlayed) return;
+    tickers.forEach((t) => {
+      const title = t.querySelector("[data-ticker-title]");
+      if (title) title.textContent = isPlaying ? `♪ ${track.title.toUpperCase()}` : "RADIO: PAUSED";
+    });
+  });
+
+  window.addEventListener("radio-viz", (e) => {
+    const { ascii, isPlaying } = (e as CustomEvent).detail || {};
+    tickers.forEach((t) => {
+      const meter = t.querySelector("[data-ticker-meter]");
+      if (meter) meter.textContent = isPlaying ? ascii : "";
+    });
+  });
+</script>

@@ -1,0 +1,84 @@
+---
+/**
+ * Header button that turns the <CRT> effect on/off (green/red indicator).
+ * <CRTToggle />
+ * <CRTToggle withIntensity />   also shows a LOW/MEDIUM/HIGH/ULTRA dropdown
+ */
+import type { HTMLAttributes } from "astro/types";
+import Button from "../controls/Button.astro";
+import Select from "../controls/Select.astro";
+import { CRT_PRESETS } from "../../lib/crt";
+
+interface Props extends HTMLAttributes<"div"> {
+  withIntensity?: boolean;
+  hideOnMobile?: boolean;
+  label?: string;
+}
+
+const { withIntensity = false, hideOnMobile = true, label = "CRT", class: className, ...rest } = Astro.props;
+const intensityOptions = Object.entries(CRT_PRESETS).map(([value, p]) => ({ value, label: p.label }));
+---
+
+<div class:list={["crt-toggle", { "crt-toggle--desktop-only": hideOnMobile }, className]} data-crt-toggle {...rest}>
+  <Button size="sm" data-crt-button aria-pressed="true" aria-label="Toggle CRT effect">
+    <span class="crt-toggle__led" data-crt-led aria-hidden="true"></span>
+    <span>{label}</span>
+  </Button>
+  {withIntensity && <Select compact data-crt-intensity aria-label="CRT intensity" options={intensityOptions} value="medium" />}
+</div>
+
+<style>
+  .crt-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .crt-toggle__led {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--success);
+  }
+
+  .crt-toggle[data-on="false"] .crt-toggle__led {
+    background: var(--danger-strong);
+  }
+
+  @media (max-width: 767px) {
+    .crt-toggle--desktop-only {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { getCRTState, setCRT, toggleCRT, type CRTIntensity } from "../../lib/crt";
+  import { playBeep } from "../../lib/sound";
+
+  const toggles = document.querySelectorAll<HTMLElement>("[data-crt-toggle]");
+
+  function render() {
+    const state = getCRTState();
+    toggles.forEach((el) => {
+      el.dataset.on = String(state.enabled);
+      el.querySelector("[data-crt-button]")?.setAttribute("aria-pressed", String(state.enabled));
+      const select = el.querySelector<HTMLSelectElement>("[data-crt-intensity]");
+      if (select) select.value = state.intensity;
+    });
+  }
+
+  render();
+  toggles.forEach((el) => {
+    el.querySelector("[data-crt-button]")?.addEventListener("click", () => {
+      toggleCRT();
+      playBeep(450, 0.04);
+    });
+    const select = el.querySelector<HTMLSelectElement>("[data-crt-intensity]");
+    select?.addEventListener("change", () => {
+      setCRT({ enabled: true, intensity: select.value as CRTIntensity });
+      playBeep(500, 0.04);
+    });
+  });
+  window.addEventListener("crt-change", render);
+</script>

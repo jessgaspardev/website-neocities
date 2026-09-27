@@ -1,32 +1,106 @@
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "../layouts/Layout.astro";
+import Section from "@/components/surfaces/Section.astro";
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+import Card from "@/components/surfaces/Card.astro";
+import Badge from "@/components/feedback/Badge.astro";
+import Button from "@/components/controls/Button.astro";
 ---
 
-<Layout>
-    <h1>Cool stuff I find and save</h1>
-    <p>Tools</p>
-    <ul>
-        <li><mark>delphitools</mark> // Great resource with free web tools for image editing, colors, typography and much more; [<a href="https://delphi.tools/" target="_blank">link</a>]</li>
-        <li><mark>web badges world</mark> // A resource with many website badges and you can create your own too; [<a href="https://web.badges.world/" target="_blank">link</a>]</li>
-        <li><mark>petrapixel</mark> // Layout generator for indie sites; [<a href="https://petrapixel.neocities.org/coding/layout-generator" target="_blank">link</a>]</li>
-        <li><mark>indie web database</mark> // A collection of websites, webrings, cliques and widgets; [<a href="https://petrapixel.neocities.org/indiewebdb/" target="_blank"><img src="https://cdn.jsdelivr.net/gh/petracoding/petrapixel.neocities.org@latest/public/assets/img/links/indiewebdb.png" alt="indie web database"></a>]</li>
-        <li><mark>gifcities</mark> // A whole lot of animated gifs; [<a href="https://gifcities.org/" target="_blank">link</a>]</li>
-    </ul>
-    <p>Other cool websites that inspire me:</p>
-    <div class="buttons-gallery">
-        <a href="http://laurabarros.neocities.org"><img src="http://laurabarros.neocities.org/botao.png" border="0"></a>
-        <a target="_blank" href="https://espy.world/"><img src="https://espy.world/img/button.gif" style="image-rendering: pixelated"/></a>
-        <a href="https://petrapixel.neocities.org/" target="_blank"><img src="https://cdn.jsdelivr.net/gh/petracoding/petrapixel.neocities.org@latest/public/assets/img/linkback.gif" alt="petrapixel"></a>    
-    </div>
-    
+<Layout
+  title="Bookmarks"
+  description="Selected showcase of bookmarks of web links with useful resources and cool stuff."
+>
+  <Section
+    id="bookmarks"
+    title="BOOKMARKS.MD"
+    subtitle="Cool stuff I find and save"
+    meta="[LINKS]"
+  >
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// TOOLS" />
+      <ul>
+        <li>
+          <Button glow href="https://delphi.tools/" target="_blank"
+            >delphitools</Button
+          >
+          <span
+            >// Great resource with free web tools for image editing, colors,
+            typography and much more;</span
+          >
+        </li>
+        <li>
+          <Button glow href="https://web.badges.world/" target="_blank"
+            >web badges world</Button
+          >
+          <span
+            >/ A resource with many website badges and you can create your own
+            too;</span
+          >
+        </li>
+        <li>
+          <Button
+            glow
+            href="https://petrapixel.neocities.org/coding/layout-generator"
+            target="_blank">petrapixel</Button
+          >
+          <span>// Layout generator for indie sites;</span>
+        </li>
+        <li>
+          <Button
+            glow
+            href="https://petrapixel.neocities.org/indiewebdb/"
+            target="_blank">indie web database</Button
+          >
+          <span
+            >// A collection of websites, webrings, cliques and widgets;</span
+          >
+        </li>
+        <li>
+          <Button glow href="https://gifcities.org/" target="_blank"
+            >gifcities</Button
+          >
+          <span>// A whole lot of animated gifs;</span>
+        </li>
+      </ul>
+    </Card>
+
+    <Card variant="inset">
+      <SectionHeader size="sm" title="// COOL WEBSITES THAT INSPIRE ME" />
+      <div class="buttons-gallery">
+        <a href="http://laurabarros.neocities.org"
+          ><img
+            src="http://laurabarros.neocities.org/botao.png"
+            border="0"
+          /></a
+        >
+        <a target="_blank" href="https://espy.world/"
+          ><img
+            src="https://espy.world/img/button.gif"
+            style="image-rendering: pixelated"
+          /></a
+        >
+        <a href="https://petrapixel.neocities.org/" target="_blank"
+          ><img
+            src="https://cdn.jsdelivr.net/gh/petracoding/petrapixel.neocities.org@latest/public/assets/img/linkback.gif"
+            alt="petrapixel"
+          /></a
+        >
+      </div>
+    </Card>
+  </Section>
 </Layout>
 
 <style>
-    .buttons-gallery *{
-        margin-right: 2px;
-    }
+  span {
+    font-size: var(--text-xs);
+    color: var(--fg-dim);
+  }
+  .buttons-gallery * {
+    margin-right: 2px;
+  }
 
-    img:hover {
-        border: 2px solid yellowgreen;
-    }
+  img:hover {
+    border: 2px solid var(--accent);
+  }
 </style>

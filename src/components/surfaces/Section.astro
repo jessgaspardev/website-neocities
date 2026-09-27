@@ -1,0 +1,31 @@
+---
+/**
+ * Page section card = Card + SectionHeader. The main content block of the dashboard.
+ *
+ * <Section id="about" title="CAT BIO.TXT" subtitle="ABOUT ME" meta="[READ-ONLY]">
+ *   <p>…</p>
+ * </Section>
+ */
+import type { HTMLAttributes } from "astro/types";
+import Card from "./Card.astro";
+import SectionHeader from "./SectionHeader.astro";
+
+interface Props extends HTMLAttributes<"section"> {
+  title: string;
+  subtitle?: string;
+  prompt?: string;
+  icon?: string;
+  meta?: string;
+  gap?: number;
+}
+
+const { title, subtitle, prompt, icon, meta, gap = 4, ...rest } = Astro.props;
+const hasMetaSlot = Astro.slots.has("meta");
+---
+
+<Card as="section" padding="lg" gap={gap} {...rest}>
+  <SectionHeader title={title} subtitle={subtitle} prompt={prompt} icon={icon} meta={meta}>
+    {hasMetaSlot && <slot name="meta" slot="meta" />}
+  </SectionHeader>
+  <slot />
+</Card>

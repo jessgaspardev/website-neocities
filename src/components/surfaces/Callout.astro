@@ -1,0 +1,182 @@
+---
+/**
+ * Notice / alert banner.
+ *
+ * <Callout variant="warning" icon="⚠️" title="[DISPLAY_NOTICE]: BEST VIEWED ON DESKTOP" dismissible storageKey="desktop-notice">
+ *   For the full experience…
+ * </Callout>
+ * <Callout variant="danger" title="⚠️ [SYSTEM ERROR 404]" badge="STATUS: 404 NOT FOUND" pulse />
+ *
+ * variant: warning | danger | success | info
+ * show:    all | mobile (below 768px only) | desktop
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  variant?: "warning" | "danger" | "success" | "info";
+  title?: string;
+  icon?: string;
+  /** Right-aligned chip, e.g. a status code. */
+  badge?: string;
+  /** Slowly pulse the whole banner (attention grabber). */
+  pulse?: boolean;
+  dismissible?: boolean;
+  /** Remember dismissal in localStorage under this key. */
+  storageKey?: string;
+  show?: "all" | "mobile" | "desktop";
+}
+
+const {
+  variant = "info",
+  title,
+  icon,
+  badge,
+  pulse = false,
+  dismissible = false,
+  storageKey,
+  show = "all",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const hasBody = Astro.slots.has("default");
+---
+
+<div
+  class:list={["callout", `callout--${variant}`, `callout--show-${show}`, { "callout--pulse": pulse }, className]}
+  role={variant === "danger" ? "alert" : "status"}
+  data-callout
+  data-storage-key={storageKey}
+  {...rest}
+>
+  {(title || badge || dismissible) && (
+    <div class="callout__head">
+      {title && (
+        <div class="callout__title">
+          {icon && <span class="callout__icon" aria-hidden="true">{icon}</span>}
+          <span>{title}</span>
+        </div>
+      )}
+      {badge && <span class="callout__badge">{badge}</span>}
+      {dismissible && (
+        <button type="button" class="callout__close" data-callout-dismiss aria-label="Dismiss">
+          [X]
+        </button>
+      )}
+    </div>
+  )}
+  {hasBody && <div class="callout__body"><slot /></div>}
+</div>
+
+<style>
+  .callout {
+    --_c: var(--info);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-3);
+    border: 1px solid color-mix(in srgb, var(--_c) 55%, transparent);
+    background: color-mix(in srgb, var(--_c) 8%, transparent);
+    color: var(--_c);
+    font-family: var(--font);
+    font-size: var(--text-xs);
+  }
+
+  .callout[hidden] {
+    display: none;
+  }
+
+  .callout--warning { --_c: var(--warning); }
+  .callout--danger { --_c: var(--danger); }
+  .callout--success { --_c: var(--success); }
+  .callout--info { --_c: var(--info); }
+
+  .callout__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .callout__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+  }
+
+  .callout__icon {
+    animation: callout-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .callout__badge {
+    padding: 2px 8px;
+    border: 1px solid color-mix(in srgb, var(--_c) 60%, transparent);
+    background: color-mix(in srgb, var(--_c) 20%, transparent);
+    color: color-mix(in srgb, var(--_c) 45%, white);
+    font-size: var(--text-small);
+    font-weight: 700;
+  }
+
+  .callout__close {
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .callout__close:hover {
+    color: color-mix(in srgb, var(--_c) 45%, white);
+  }
+
+  .callout__body {
+    color: color-mix(in srgb, var(--_c) 55%, white);
+    font-size: var(--text-small);
+    line-height: var(--leading-relaxed);
+  }
+
+  .callout__body :global(p) {
+    margin: 0;
+  }
+
+  .callout--pulse {
+    animation: callout-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes callout-pulse {
+    50% { opacity: 0.5; }
+  }
+
+  @media (min-width: 768px) {
+    .callout--show-mobile { display: none; }
+  }
+
+  @media (max-width: 767px) {
+    .callout--show-desktop { display: none; }
+  }
+</style>
+
+<script>
+  import { readStorage, writeStorage } from "../../lib/global";
+
+  // Runs on first load and after every client-side page change; the marker
+  // attribute stops callouts that survived the swap from being bound twice.
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-callout]:not([data-callout-ready])").forEach((callout) => {
+      callout.dataset.calloutReady = "";
+      const key = callout.dataset.storageKey;
+      if (key && readStorage(key) === "dismissed") callout.hidden = true;
+
+      callout.querySelector("[data-callout-dismiss]")?.addEventListener("click", () => {
+        callout.hidden = true;
+        if (key) writeStorage(key, "dismissed");
+      });
+    });
+  });
+</script>

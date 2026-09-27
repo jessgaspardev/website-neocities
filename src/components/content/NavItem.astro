@@ -1,0 +1,125 @@
+---
+/**
+ * One row in a <NavList>, laid out like a radio tracklist row:
+ * `num.  Title  (meta)`. A link when `href` is set, otherwise a button
+ * (e.g. to open a modal via data-modal-open="id").
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends Omit<HTMLAttributes<"a">, "type"> {
+  href?: string;
+  /** Leading number, written as-is (e.g. "1."). */
+  num?: string;
+  /** Dim trailing text, shown in parentheses. */
+  meta?: string;
+  /** Title color (default: bright). */
+  tone?: Tone;
+  /** Highlight as the current page/section (default: `href` matches the current URL). */
+  active?: boolean;
+  /** Dashed outline — used for "launch" actions. */
+  dashed?: boolean;
+}
+
+const trimSlash = (path: string) => path.replace(/\/+$/, "") || "/";
+const current = trimSlash(Astro.url.pathname);
+// "/" only matches the home page; other links also match their subpages
+const isCurrent = (path: string) =>
+  path.startsWith("/") && (path === "/" ? current === "/" : current === path || current.startsWith(`${path}/`));
+
+const { href, num, meta, tone, dashed = false, class: className, style, ...rest } = Astro.props;
+const active = Astro.props.active ?? (href ? isCurrent(trimSlash(href)) : false);
+const Tag = href ? "a" : "button";
+const color = tone ? `color: ${toneVar(tone)}` : "";
+const mergedStyle = color ? mergeStyle(color, style) : style;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : ("button" as const)}
+  class:list={["navitem", { "navitem--active": active, "navitem--dashed": dashed }, className]}
+  aria-current={active && href ? "true" : undefined}
+  style={mergedStyle}
+  {...rest}
+>
+  {num && <span class="navitem__num">{num}</span>}
+  <span class="navitem__title"><slot /></span>
+  {meta && <span class="navitem__meta">[{meta}]</span>}
+</Tag>
+
+<style>
+  .navitem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 6px;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--fg-bright);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition);
+  }
+
+  /* Terminal prompt (same as the ul bullet), hidden until hover/active so rows don't shift */
+  .navitem::before {
+    content: ">";
+    flex-shrink: 0;
+    margin-right: calc(var(--space-1) - var(--space-2));
+    visibility: hidden;
+  }
+
+  .navitem:hover::before,
+  .navitem:focus-visible::before,
+  .navitem--active::before {
+    visibility: visible;
+  }
+
+  .navitem:hover {
+    border-color: var(--border);
+    background: var(--border);
+  }
+
+  .navitem:focus-visible {
+    outline: 1px solid var(--accent);
+  }
+
+  .navitem--active {
+    border-color: var(--accent);
+    background: var(--border);
+  }
+
+  .navitem__num {
+    width: 16px;
+    flex-shrink: 0;
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+  }
+
+  .navitem__title {
+    overflow: hidden;
+    color: inherit;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .navitem__meta {
+    flex-shrink: 0;
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+  }
+
+  .navitem--dashed {
+    margin-top: var(--space-1);
+    border: 1px dashed var(--border);
+    color: var(--accent);
+  }
+</style>

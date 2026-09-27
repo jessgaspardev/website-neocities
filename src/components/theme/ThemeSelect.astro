@@ -1,0 +1,47 @@
+---
+/**
+ * Dropdown that switches between the themes listed in lib/theme.ts.
+ * <ThemeSelect />
+ * <ThemeSelect themes={["green", "amber"]} />   only offer some of them
+ */
+import type { HTMLAttributes } from "astro/types";
+import Select from "../controls/Select.astro";
+import { THEMES } from "../../lib/theme";
+
+interface Props extends Omit<HTMLAttributes<"select">, "value"> {
+  themes?: string[];
+  showEmoji?: boolean;
+}
+
+const { themes, showEmoji = true, ...rest } = Astro.props;
+const list = themes ? THEMES.filter((t) => themes.includes(t.id)) : THEMES;
+---
+
+<Select
+  compact
+  aria-label="Color theme"
+  data-theme-select
+  options={list.map((t) => ({ value: t.id, label: showEmoji ? `${t.emoji} ${t.name}` : t.name }))}
+  {...rest}
+/>
+
+<script>
+  import { getTheme, setTheme } from "../../lib/theme";
+  import { playBeep } from "../../lib/sound";
+
+  const selects = document.querySelectorAll<HTMLSelectElement>("[data-theme-select]");
+
+  function sync() {
+    const current = getTheme();
+    selects.forEach((s) => (s.value = current));
+  }
+
+  sync();
+  selects.forEach((select) =>
+    select.addEventListener("change", () => {
+      setTheme(select.value);
+      playBeep(600, 0.05);
+    }),
+  );
+  window.addEventListener("theme-change", sync);
+</script>

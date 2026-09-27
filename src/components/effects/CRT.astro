@@ -1,0 +1,125 @@
+---
+/**
+ * Full-screen CRT monitor effect: scanlines + RGB phosphor mask, dark
+ * vignette corners, and a subtle flicker. Click-through (pointer-events: none).
+ */
+
+import { CRT_INTENSITY_STORAGE_KEY, CRT_PRESETS, CRT_STORAGE_KEY, type CRTIntensity } from "../../lib/crt";
+
+interface Props {
+  enabled?: boolean;
+  intensity?: CRTIntensity;
+  flicker?: boolean;
+  disableOnMobile?: boolean;
+  zIndex?: number;
+}
+
+const { enabled = true, intensity = "medium", flicker = true, disableOnMobile = true, zIndex = 9999 } = Astro.props;
+---
+
+<script
+  is:inline
+  define:vars={{
+    presets: CRT_PRESETS,
+    defaults: { enabled, intensity, flicker },
+    keys: { enabled: CRT_STORAGE_KEY, intensity: CRT_INTENSITY_STORAGE_KEY },
+  }}
+>
+  (function () {
+    var root = document.documentElement;
+    var on = defaults.enabled;
+    var level = defaults.intensity;
+    try {
+      var savedOn = localStorage.getItem(keys.enabled);
+      var savedLevel = localStorage.getItem(keys.intensity);
+      if (savedOn !== null) on = savedOn === "true";
+      if (savedLevel && presets[savedLevel]) level = savedLevel;
+    } catch (e) {}
+    var preset = presets[level] || presets.medium;
+    root.setAttribute("data-crt", on ? "on" : "off");
+    root.setAttribute("data-crt-intensity", level);
+    if (defaults.flicker) root.setAttribute("data-crt-flicker", "");
+    root.style.setProperty("--scanline-opacity", String(preset.scanline));
+    root.style.setProperty("--vignette-opacity", String(preset.vignette));
+  })();
+</script>
+
+<div class:list={["crt", { "crt--desktop-only": disableOnMobile }]} style={`--_z: ${zIndex}`} aria-hidden="true">
+  <div class="crt__scanlines"></div>
+  <div class="crt__vignette"></div>
+</div>
+
+<style>
+  .crt {
+    position: fixed;
+    inset: 0;
+    z-index: var(--_z);
+    pointer-events: none;
+  }
+
+  .crt__scanlines,
+  .crt__vignette {
+    position: absolute;
+    inset: 0;
+  }
+
+  .crt__scanlines {
+    background:
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.75) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size:
+      100% 4px,
+      6px 100%;
+    opacity: var(--scanline-opacity);
+  }
+
+  .crt__vignette {
+    box-shadow: inset 0 0 120px rgba(0, 0, 0, var(--vignette-opacity));
+  }
+
+  :global(html[data-crt="off"]) .crt {
+    display: none;
+  }
+
+  :global(html[data-crt="on"][data-crt-flicker] body) {
+    animation: crt-flicker 0.15s infinite;
+  }
+
+  @media (max-width: 767px) {
+    .crt--desktop-only {
+      display: none;
+    }
+
+    :global(html[data-crt-flicker] body) {
+      animation: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-crt-flicker] body) {
+      animation: none !important;
+    }
+  }
+
+  @keyframes crt-flicker {
+    0% { opacity: 0.995; }
+    50% { opacity: 1; }
+    52% { opacity: 0.96; }
+    54% { opacity: 1; }
+    80% { opacity: 0.99; }
+    100% { opacity: 1; }
+  }
+</style>
+
+<script>
+  import { expose } from "../../lib/global";
+  import { getCRTState, setCRT, toggleCRT, CRT_PRESETS, type CRTIntensity } from "../../lib/crt";
+
+  expose("crt", {
+    get: getCRTState,
+    set: setCRT,
+    toggle: toggleCRT,
+    setIntensity: (intensity: CRTIntensity) => setCRT({ intensity }),
+    presets: CRT_PRESETS,
+  });
+</script>

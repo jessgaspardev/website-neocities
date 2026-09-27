@@ -1,0 +1,171 @@
+---
+/**
+ * The big terminal window frame: title bar, body and optional status bar.
+ *
+ * <TerminalWindow user="jess@home:" path="~/portfolio" branch="main*">
+ *   <Fragment slot="header-actions">
+ *     <ThemeSelect /> <CRTToggle /> <SfxToggle /> <RadioButton />
+ *   </Fragment>
+ *
+ *   …page content…
+ *
+ *   <StatusBar slot="footer">…</StatusBar>
+ * </TerminalWindow>
+ *
+ * Slots: default (body), header-center (e.g. <Tabs>), header-actions, footer, title (custom title markup)
+ */
+import type { HTMLAttributes } from "astro/types";
+import WindowDots from "./WindowDots.astro";
+import { mergeStyle } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  user?: string;
+  /** Accent path part of the title. */
+  path?: string;
+  /** Small chip after the path. */
+  branch?: string;
+  maxWidth?: string;
+  /** Minimum body height, e.g. "650px". */
+  minHeight?: string;
+  /** Body padding: md (16/24px) or none. */
+  padding?: "md" | "none";
+}
+
+const {
+  user,
+  path,
+  branch,
+  maxWidth,
+  minHeight,
+  padding = "md",
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const vars = `--_max: ${maxWidth}; --_min-h: ${minHeight ?? "0"}`;
+---
+
+<div class:list={["window", className]} style={mergeStyle(vars, style)} {...rest}>
+  <header class="window__bar">
+    <div class="window__left">
+      <WindowDots interactive />
+      <div class="window__title">
+        {user && <span class="window__user">{user}</span>}
+        {path && <span class="window__path">{path}</span>}
+        {branch && <span class="window__branch">{branch}</span>}
+        <slot name="title" />
+      </div>
+    </div>
+
+    {
+      Astro.slots.has("header-center") && (
+        <div class="window__center">
+          <slot name="header-center" />
+        </div>
+      )
+    }
+
+    {
+      Astro.slots.has("header-actions") && (
+        <div class="window__actions">
+          <slot name="header-actions" />
+        </div>
+      )
+    }
+  </header>
+
+  <div class:list={["window__body", `window__body--${padding}`]}>
+    <slot />
+  </div>
+
+  <slot name="footer" />
+</div>
+
+<style>
+  .window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--_max);
+    margin-inline: auto;
+    border: 1px solid var(--border-active);
+    background: var(--bg);
+    box-shadow: var(--shadow-window);
+    color: var(--fg);
+    font-family: var(--font);
+  }
+
+  .window__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    background: var(--statusbar-bg);
+    user-select: none;
+  }
+
+  .window__left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .window__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--fg-bright);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .window__user {
+    color: var(--fg-dim);
+  }
+
+  .window__path {
+    color: var(--accent);
+  }
+
+  .window__branch {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--border);
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 400;
+  }
+
+  .window__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .window__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: var(--_min-h);
+  }
+
+  .window__body--md {
+    padding: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .window__body--md {
+      padding: var(--space-6);
+    }
+  }
+</style>

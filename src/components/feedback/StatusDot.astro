@@ -1,0 +1,68 @@
+---
+/**
+ * Small round status light.
+ *
+ * <StatusDot />                                green, static
+ * <StatusDot animation="pulse" />              fading in/out ("LIVE REST API")
+ * <StatusDot animation="ping" size={10} />     radar ping ring ("OPEN FOR WORK")
+ * <StatusDot tone="danger" />
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"span"> {
+  tone?: Tone;
+  /** Diameter in px. */
+  size?: number;
+  animation?: "none" | "pulse" | "ping";
+}
+
+const { tone = "success", size = 8, animation = "none", class: className, style, ...rest } = Astro.props;
+const vars = `--_color: ${toneVar(tone)}; --_size: ${size}px`;
+---
+
+<span
+  class:list={["dot", animation !== "none" && `dot--${animation}`, className]}
+  style={mergeStyle(vars, style)}
+  aria-hidden="true"
+  {...rest}></span>
+
+<style>
+  .dot {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--_size);
+    height: var(--_size);
+    border-radius: 9999px;
+    background: var(--_color);
+  }
+
+  .dot--pulse {
+    animation: dot-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .dot--ping::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0.75;
+    animation: dot-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes dot-pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes dot-ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+</style>

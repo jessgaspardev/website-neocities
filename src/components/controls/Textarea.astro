@@ -1,0 +1,47 @@
+---
+/**
+ * Multi-line text input. All normal <textarea> attributes pass through.
+ * <Textarea id="message" name="message" rows={4} required />
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"textarea"> {
+  resize?: "none" | "vertical" | "both";
+}
+
+const { resize = "none", rows = 4, class: className, ...rest } = Astro.props;
+---
+
+<textarea
+  rows={rows}
+  class:list={["textarea", className]}
+  style={`resize: ${resize}`}
+  {...rest}><slot /></textarea>
+
+<style>
+  .textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    transition: border-color var(--transition);
+  }
+
+  .textarea::placeholder {
+    color: var(--fg-dim);
+    opacity: 0.7;
+  }
+
+  .textarea:focus {
+    outline: none;
+    border-color: var(--border-active);
+  }
+</style>

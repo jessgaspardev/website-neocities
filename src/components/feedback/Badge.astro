@@ -1,0 +1,90 @@
+---
+/**
+ * Small label chip.
+ *
+ * <Badge>EXPERT</Badge>                        solid: filled with border color, accent text
+ * <Badge variant="outline">Open Source Org</Badge>
+ * <Badge variant="muted">TypeScript</Badge>    tech-stack tag
+ * <Badge variant="danger">YouTube</Badge>
+ * <Badge tone="warning">BETA</Badge>          any variant + custom text color
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"span"> {
+  variant?: "solid" | "outline" | "muted" | "danger";
+  size?: "xs" | "sm" | "md";
+  tone?: Tone;
+  uppercase?: boolean;
+}
+
+const { variant = "solid", size = "sm", tone, uppercase = false, class: className, style, ...rest } = Astro.props;
+const toneStyle = tone ? `--_tone: ${toneVar(tone)}` : "";
+---
+
+<span
+  class:list={["badge", `badge--${variant}`, `badge--${size}`, { "badge--upper": uppercase, "badge--tone": tone }, className]}
+  style={toneStyle ? mergeStyle(toneStyle, style) : style}
+  {...rest}
+>
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid transparent;
+    font-family: var(--font);
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .badge--xs {
+    padding: 0 4px;
+    font-size: var(--text-micro);
+  }
+
+  .badge--sm {
+    padding: 1px 6px;
+    font-size: var(--text-tiny);
+  }
+
+  .badge--md {
+    padding: 2px 8px;
+    font-size: var(--text-small);
+  }
+
+  .badge--upper {
+    text-transform: uppercase;
+  }
+
+  .badge--solid {
+    background: var(--border);
+    color: var(--accent);
+  }
+
+  .badge--outline {
+    border-color: var(--border);
+    color: var(--accent);
+  }
+
+  .badge--muted {
+    border-color: var(--border);
+    background: var(--bg-card);
+    color: var(--fg-dim);
+    font-weight: 400;
+  }
+
+  .badge--danger {
+    border-color: #991b1b;
+    background: #450a0a;
+    color: var(--danger);
+  }
+
+  .badge--tone {
+    color: var(--_tone);
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * Button that turns the retro sound effects on/off (remembered per visitor).
+ * <SfxToggle />
+ * <SfxToggle compact />   icon only
+ */
+import type { HTMLAttributes } from "astro/types";
+import Button from "../controls/Button.astro";
+
+interface Props extends HTMLAttributes<"button"> {
+  compact?: boolean;
+}
+
+const { compact = false, ...rest } = Astro.props;
+---
+
+<Button size="sm" data-sfx-toggle aria-pressed="true" aria-label="Toggle sound effects" {...rest}>
+  <span data-sfx-icon aria-hidden="true">🔊</span>
+  {!compact && <span data-sfx-label class="sfx__label">SFX ON</span>}
+</Button>
+
+<style>
+  @media (max-width: 639px) {
+    .sfx__label {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { isSfxEnabled, toggleSfx } from "../../lib/sound";
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-sfx-toggle]");
+
+  function render() {
+    const on = isSfxEnabled();
+    buttons.forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(on));
+      const icon = btn.querySelector("[data-sfx-icon]");
+      const label = btn.querySelector("[data-sfx-label]");
+      if (icon) icon.textContent = on ? "🔊" : "🔇";
+      if (label) label.textContent = on ? "SFX ON" : "SFX OFF";
+    });
+  }
+
+  render();
+  buttons.forEach((btn) => btn.addEventListener("click", () => toggleSfx()));
+  window.addEventListener("sfx-change", render);
+</script>

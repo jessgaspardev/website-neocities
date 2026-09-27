@@ -1,0 +1,52 @@
+---
+/**
+ * Vertical (or horizontal) stack with even spacing between children.
+ * <Stack gap={6}>…</Stack>   <Stack direction="row" gap={2} wrap>…</Stack>
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, spaceVar } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  gap?: number;
+  direction?: "column" | "row";
+  align?: "stretch" | "start" | "center" | "end" | "baseline";
+  justify?: "start" | "center" | "end" | "between";
+  wrap?: boolean;
+  as?: "div" | "section" | "ul" | "ol" | "nav" | "aside" | "article";
+}
+
+const {
+  gap = 4,
+  direction = "column",
+  align = "stretch",
+  justify = "start",
+  wrap = false,
+  as: Tag = "div",
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const justifyValue = justify === "between" ? "space-between" : justify === "start" ? "flex-start" : justify === "end" ? "flex-end" : "center";
+const alignValue = align === "start" ? "flex-start" : align === "end" ? "flex-end" : align;
+const vars = `--_gap: ${spaceVar(gap)}; --_dir: ${direction}; --_align: ${alignValue}; --_justify: ${justifyValue}; --_wrap: ${wrap ? "wrap" : "nowrap"}`;
+---
+
+<Tag class:list={["stack", className]} style={mergeStyle(vars, style)} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: var(--_dir);
+    flex-wrap: var(--_wrap);
+    align-items: var(--_align);
+    justify-content: var(--_justify);
+    gap: var(--_gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+  }
+</style>

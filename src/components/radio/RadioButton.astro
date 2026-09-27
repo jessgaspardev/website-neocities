@@ -1,0 +1,32 @@
+---
+/**
+ * Button that opens the <RadioPlayer>.
+ * <RadioButton />
+ * <RadioButton label="Music" variant="default" />
+ */
+import type { HTMLAttributes } from "astro/types";
+import Button from "../controls/Button.astro";
+
+interface Props extends HTMLAttributes<"button"> {
+  label?: string;
+  icon?: string;
+  /** id of the RadioPlayer's modal. */
+  target?: string;
+  variant?: "default" | "accent" | "ghost" | "dashed";
+}
+
+const { label = "Radio", icon = "📻", target = "radio", variant = "accent", ...rest } = Astro.props;
+---
+
+<Button size="sm" variant={variant} data-modal-open={target} title="Open the retro radio player" {...rest}>
+  <span aria-hidden="true">{icon}</span>
+  {label && <span class="radio-btn__label">{label}</span>}
+</Button>
+
+<style>
+  @media (max-width: 767px) {
+    .radio-btn__label {
+      display: none;
+    }
+  }
+</style>

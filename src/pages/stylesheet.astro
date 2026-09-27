@@ -1,0 +1,208 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ColorSwatches from "@/components/content/ColorSwatches.astro";
+import Field from "@/components/controls/Field.astro";
+import Input from "@/components/controls/Input.astro";
+import Range from "@/components/controls/Range.astro";
+import Select from "@/components/controls/Select.astro";
+import Textarea from "@/components/controls/Textarea.astro";
+import AsciiMeter from "@/components/feedback/AsciiMeter.astro";
+import Badge from "@/components/feedback/Badge.astro";
+import Equalizer from "@/components/feedback/Equalizer.astro";
+import ProgressBar from "@/components/feedback/ProgressBar.astro";
+import SkillMeter from "@/components/feedback/SkillMeter.astro";
+import StatusDot from "@/components/feedback/StatusDot.astro";
+import Grid from "@/components/layout/Grid.astro";
+import AsciiBlock from "@/components/surfaces/AsciiBlock.astro";
+import Section from "@/components/surfaces/Section.astro";
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+import Tabs from "@/components/window/Tabs.astro";
+import WindowDots from "@/components/window/WindowDots.astro";
+import Button from "@/components/controls/Button.astro";
+import Stack from "@/components/layout/Stack.astro";
+import Kbd from "@/components/controls/Kbd.astro";
+import Callout from "@/components/surfaces/Callout.astro";
+import Card from "@/components/surfaces/Card.astro";
+import Modal from "@/components/window/Modal.astro";
+
+
+const bigAscii = `██████╗ ███████╗████████╗██████╗  ██████╗
+██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗
+██████╔╝█████╗     ██║   ██████╔╝██║   ██║
+██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║
+██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝
+╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝`;
+---
+
+<Layout>
+  <Modal id="demo-modal" title="HELLO.EXE" shortTitle="HELLO.EXE" icon="💾" size="sm">
+      <div class="demo-modal-body">
+        <p>This is the generic <strong>&lt;Modal&gt;</strong> window. The radio player is built on it.</p>
+        <p>Close with the button, the red dot, <Kbd>ESC</Kbd>, or by clicking the backdrop.</p>
+      </div>
+      <Fragment slot="footer">
+        <span>modal.astro</span>
+        <span><Kbd>ESC</Kbd> Close</span>
+      </Fragment>
+    </Modal>
+  <Section
+    id="kit"
+    title="KIT.CSS"
+    subtitle="EVERY COMPONENT & VARIANT"
+    meta="[REFERENCE]"
+  >
+    <SectionHeader size="sm" title="Buttons" />
+    <Stack direction="row" wrap gap={2}>
+      <Button>Default</Button>
+      <Button variant="primary">Primary</Button>
+      <Button variant="accent">Accent</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="dashed">Dashed</Button>
+      <Button variant="danger">✕ Danger</Button>
+      <Button glow>Glow</Button>
+      <Button disabled>Disabled</Button>
+    </Stack>
+    <Stack direction="row" wrap gap={2} align="center">
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+      <Button variant="accent" data-modal-open="demo-modal"
+        ><span slot="icon">💾</span> Open modal</Button
+      >
+    </Stack>
+
+    <SectionHeader size="sm" title="Badges & status" />
+    <Stack direction="row" wrap gap={2} align="center">
+      <Badge>Solid</Badge>
+      <Badge variant="outline" uppercase>Outline</Badge>
+      <Badge variant="muted">Muted</Badge>
+      <Badge variant="danger">Danger</Badge>
+      <Badge variant="outline" tone="warning">Tone: warning</Badge>
+      <Badge size="xs">XS</Badge>
+      <Badge size="md">MD</Badge>
+      <StatusDot />
+      <StatusDot animation="pulse" tone="warning" />
+      <StatusDot animation="ping" tone="danger" size={10} />
+      <Equalizer />
+      <Equalizer active={false} />
+      <Kbd>Ctrl</Kbd><Kbd>K</Kbd>
+      <WindowDots />
+    </Stack>
+
+    <SectionHeader size="sm" title="Meters" />
+    <Grid cols={1} md={2} gap={4}>
+      <Stack gap={3}>
+        <ProgressBar value={35} />
+        <ProgressBar value={70} tone="success" height={10} />
+        <AsciiMeter value={60} />
+        <AsciiMeter value={3} max={5} segments={5} tone="accent" />
+      </Stack>
+      <SkillMeter
+        name="CSS without Tailwind"
+        experience="∞ yrs"
+        value={100}
+        tag="EXPERT"
+      />
+    </Grid>
+
+    <SectionHeader size="sm" title="Callouts" />
+    <Callout variant="info" icon="ℹ️" title="Info">Neutral information.</Callout
+    >
+    <Callout variant="success" icon="✓" title="Success" />
+    <Callout
+      variant="warning"
+      icon="⚠️"
+      title="Warning, dismissible"
+      dismissible>Click [X] to hide.</Callout
+    >
+    <Callout
+      variant="danger"
+      title="⚠️ [SYSTEM ERROR 404]"
+      badge="STATUS: 404 NOT FOUND"
+      pulse
+    />
+
+    <SectionHeader size="sm" title="Form controls" />
+    <Grid cols={1} md={2} gap={4}>
+      <Field label="INPUT:" for="kit-input" hint="A hint under the field">
+        <Input id="kit-input" placeholder="Type here..." />
+      </Field>
+      <Field label="WITH ERROR:" for="kit-error" error="This field is required">
+        <Input id="kit-error" />
+      </Field>
+      <Field label="SELECT:" for="kit-select">
+        <Select
+          id="kit-select"
+          options={[
+            { value: "a", label: "Option A" },
+            { value: "b", label: "Option B" },
+          ]}
+        />
+      </Field>
+      <Field label="RANGE:" for="kit-range">
+        <Range id="kit-range" value={40} width="100%" />
+      </Field>
+    </Grid>
+    <Field label="TEXTAREA:" for="kit-textarea">
+      <Textarea id="kit-textarea" rows={3} placeholder="Multi-line..." />
+    </Field>
+    <Card variant="inset" padding="sm">
+      <Stack direction="row" gap={2} align="center">
+        <span class="text-accent">&gt;</span>
+        <Input variant="bare" placeholder="Bare input (prompt style)..." />
+      </Stack>
+    </Card>
+
+    <SectionHeader size="sm" title="Tabs" />
+    <Tabs
+      tabs={[
+        { id: "one", label: ">_ First" },
+        { id: "two", label: "[#] Second" },
+      ]}
+    >
+      <Card slot="one" variant="inset" padding="sm"
+        ><p class="demo-text">First panel. Use ← → keys too.</p></Card
+      >
+      <Card slot="two" variant="inset" padding="sm"
+        ><p class="demo-text">Second panel.</p></Card
+      >
+    </Tabs>
+
+    <SectionHeader size="sm" title="Cards, text & ASCII" />
+    <Grid cols={1} md={3} gap={3}>
+      <Card
+        ><strong class="text-bright">Panel</strong><span class="demo-text"
+          >Card background.</span
+        ></Card
+      >
+      <Card variant="inset" interactive
+        ><strong class="text-bright">Inset + interactive</strong><span
+          class="demo-text">Hover me.</span
+        ></Card
+      >
+      <Card dashed variant="ghost" label="LABEL"
+        ><strong class="text-bright">Dashed ghost</strong><span
+          class="demo-text">With a corner label.</span
+        ></Card
+      >
+    </Grid>
+    <AsciiBlock text={bigAscii} bare tone="accent" size="md" />
+    <AsciiBlock
+      text={"$ npm run build\n✓ 0 tailwind classes found"}
+      selectable
+    />
+    <ColorSwatches
+      colors={[
+        "var(--bg)",
+        "var(--bg-card)",
+        "var(--border)",
+        "var(--fg-dim)",
+        "var(--fg)",
+        "var(--fg-bright)",
+        "var(--accent)",
+        "var(--accent-2)",
+      ]}
+      label="THEME TOKENS:"
+    />
+  </Section>
+</Layout>

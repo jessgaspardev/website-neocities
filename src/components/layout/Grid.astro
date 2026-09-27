@@ -1,0 +1,70 @@
+---
+/**
+ * Responsive equal-width column grid.
+ * <Grid cols={1} md={2} gap={4}>…</Grid>        1 column, 2 from 768px
+ * <Grid cols={2} sm={4} gap={3}>…</Grid>        stat tiles
+ * Breakpoints: sm 640px, md 768px, lg 1024px. Each one inherits the
+ * previous value when not set.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, spaceVar } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  cols?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  /** Spacing step 0–8. */
+  gap?: number;
+  /** Different gap from 640px up (e.g. tighter on phones). */
+  gapSm?: number;
+  align?: "stretch" | "start" | "center" | "end";
+}
+
+const { cols = 1, sm, md, lg, gap = 4, gapSm, align = "stretch", class: className, style, ...rest } = Astro.props;
+
+const colsSm = sm ?? cols;
+const colsMd = md ?? colsSm;
+const colsLg = lg ?? colsMd;
+const vars = [
+  `--_cols: ${cols}`,
+  `--_cols-sm: ${colsSm}`,
+  `--_cols-md: ${colsMd}`,
+  `--_cols-lg: ${colsLg}`,
+  `--_gap: ${spaceVar(gap)}`,
+  `--_gap-sm: ${spaceVar(gapSm ?? gap)}`,
+  `--_align: ${align}`,
+].join(";");
+---
+
+<div class:list={["grid", className]} style={mergeStyle(vars, style)} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(var(--_cols), minmax(0, 1fr));
+    gap: var(--_gap);
+    align-items: var(--_align);
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(var(--_cols-sm), minmax(0, 1fr));
+      gap: var(--_gap-sm);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(var(--_cols-md), minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(var(--_cols-lg), minmax(0, 1fr));
+    }
+  }
+</style>

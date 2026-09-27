@@ -1,0 +1,67 @@
+---
+/**
+ * Skill row: name + experience, ASCII meter and a level tag.
+ * <SkillMeter name="TypeScript" experience="7 yrs" value={95} tag="EXPERT" />
+ */
+import type { HTMLAttributes } from "astro/types";
+import AsciiMeter from "./AsciiMeter.astro";
+import Badge from "./Badge.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  name: string;
+  value: number;
+  experience?: string;
+  tag?: string;
+}
+
+const { name, value, experience, tag, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["skill", className]} {...rest}>
+  <div class="skill__head">
+    <span class="skill__name">{name}</span>
+    {experience && <span class="skill__exp">{experience}</span>}
+  </div>
+  <div class="skill__row">
+    <AsciiMeter value={value} class="skill__meter" aria-label={`${name}: ${value}%`} />
+    {tag && <Badge size="xs">{tag}</Badge>}
+  </div>
+</div>
+
+<style>
+  .skill {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-family: var(--font);
+  }
+
+  .skill__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .skill__name {
+    color: var(--fg-bright);
+  }
+
+  .skill__exp {
+    flex-shrink: 0;
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+  }
+
+  .skill__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .skill__meter {
+    flex: 1;
+  }
+</style>

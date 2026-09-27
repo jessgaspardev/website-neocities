@@ -1,0 +1,100 @@
+---
+/**
+ * Compact "label ........ value" list (the sidebar "CONTENT SPEC" block).
+ *
+ * <KeyValueList title="CONTENT SPEC" items={[
+ *   { label: "Active Collabs:", value: 3 },
+ *   { label: "Experience:", value: "7+ Years", tone: "success" },
+ *   { label: "Visits:", slot: "visits" },
+ * ]}>
+ *   <HitCounter slot="visits" />
+ * </KeyValueList>
+ *
+ * An item with `slot` renders the matching named slot as its value, falling
+ * back to `value` when that slot isn't provided.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { toneVar, type Tone } from "../../lib/tone";
+
+interface Item {
+  label: string;
+  value?: string | number;
+  slot?: string;
+  tone?: Tone;
+}
+
+interface Props extends HTMLAttributes<"div"> {
+  items: Item[];
+  title?: string;
+  /** Draw a divider line above the list. */
+  divider?: boolean;
+}
+
+const { items, title, divider = false, class: className, ...rest } = Astro.props;
+
+const slotted = await Promise.all(
+  items.map((item) => (item.slot && Astro.slots.has(item.slot) ? Astro.slots.render(item.slot) : null)),
+);
+---
+
+<div class:list={["kv", { "kv--divider": divider }, className]} {...rest}>
+  {title && <div class="kv__title">{title}</div>}
+  <dl class="kv__list">
+    {
+      items.map((item, i) => (
+        <div class="kv__row">
+          <dt>{item.label}</dt>
+          <dd style={`color: ${toneVar(item.tone ?? "bright")}`}>
+            {slotted[i] !== null ? <Fragment set:html={slotted[i]} /> : item.value}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>
+
+<style>
+  .kv {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-family: var(--font);
+    font-size: var(--text-small);
+  }
+
+  .kv--divider {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .kv__title {
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .kv__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .kv__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .kv__row dt {
+    color: var(--fg);
+  }
+
+  .kv__row dd {
+    margin: 0;
+    font-weight: 700;
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+/**
+ * Slider in the accent color.
+ * <Range min={0} max={100} value={80} aria-label="Volume" />
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle } from "../../lib/tone";
+
+interface Props extends Omit<HTMLAttributes<"input">, "type"> {
+  width?: string;
+}
+
+const { width = "6rem", min = 0, max = 100, class: className, style, ...rest } = Astro.props;
+---
+
+<input
+  type="range"
+  min={min}
+  max={max}
+  class:list={["range", className]}
+  style={mergeStyle(`width: ${width}`, style)}
+  {...rest}
+/>
+
+<style>
+  .range {
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .range:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+/**
+ * Thin bordered progress bar.
+ * <ProgressBar value={42} />
+ *
+ * To update from JS: el.style.setProperty("--progress", "75")
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** 0–100 */
+  value?: number;
+  tone?: Tone;
+  /** Bar height in px. */
+  height?: number;
+  label?: string;
+}
+
+const { value = 0, tone = "accent", height = 6, label = "Progress", class: className, style, ...rest } = Astro.props;
+const pct = Math.min(100, Math.max(0, value));
+const vars = `--progress: ${pct}; --_color: ${toneVar(tone)}; --_height: ${height}px`;
+---
+
+<div
+  class:list={["progress", className]}
+  style={mergeStyle(vars, style)}
+  role="progressbar"
+  aria-label={label}
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow={pct}
+  {...rest}
+>
+  <div class="progress__fill"></div>
+</div>
+
+<style>
+  .progress {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--_height);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .progress__fill {
+    height: 100%;
+    width: calc(var(--progress) * 1%);
+    background: var(--_color);
+    transition: width 300ms ease;
+  }
+</style>

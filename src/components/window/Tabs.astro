@@ -1,0 +1,169 @@
+---
+/**
+ * Segmented tab control (the "CLI Mode / GUI Dashboard" switch).
+ *
+ * Control only:
+ *   <Tabs tabs={[{ id: "cli", label: ">_ CLI" }, { id: "gui", label: "[#] GUI" }]} active="gui" />
+ *
+ * With panels:
+ *   <Tabs tabs={[{ id: "about", label: "About" }, { id: "work", label: "Work" }]}>
+ *     <div slot="about">…</div>
+ *     <div slot="work">…</div>
+ *   </Tabs>
+ *
+ * Fires `tab-change` (bubbles) with detail { id } on the tab bar.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Tab {
+  id: string;
+  label: string;
+}
+
+interface Props extends HTMLAttributes<"div"> {
+  tabs: Tab[];
+  active?: string;
+  label?: string;
+  sound?: boolean;
+}
+
+const { tabs, active = tabs[0]?.id, label = "Tabs", sound = true, class: className, ...rest } = Astro.props;
+const uid = `tabs-${Math.random().toString(36).slice(2, 8)}`;
+
+const panels: Record<string, string> = {};
+for (const tab of tabs) {
+  if (Astro.slots.has(tab.id)) panels[tab.id] = await Astro.slots.render(tab.id);
+}
+const hasPanels = Object.keys(panels).length > 0;
+---
+
+<div class:list={["tabs", className]} data-tabs data-sound={String(sound)} {...rest}>
+  <div class="tabs__bar" role="tablist" aria-label={label}>
+    {
+      tabs.map((tab) => (
+        <button
+          type="button"
+          role="tab"
+          class="tabs__tab"
+          id={`${uid}-tab-${tab.id}`}
+          data-tab={tab.id}
+          aria-selected={tab.id === active ? "true" : "false"}
+          aria-controls={panels[tab.id] ? `${uid}-panel-${tab.id}` : undefined}
+          tabindex={tab.id === active ? 0 : -1}
+        >
+          {tab.label}
+        </button>
+      ))
+    }
+  </div>
+  {
+    hasPanels &&
+      tabs.map(
+        (tab) =>
+          panels[tab.id] && (
+            <div
+              class="tabs__panel"
+              role="tabpanel"
+              id={`${uid}-panel-${tab.id}`}
+              data-panel={tab.id}
+              aria-labelledby={`${uid}-tab-${tab.id}`}
+              hidden={tab.id !== active}
+            >
+              <Fragment set:html={panels[tab.id]} />
+            </div>
+          ),
+      )
+  }
+</div>
+
+<style>
+  .tabs {
+    font-family: var(--font);
+  }
+
+  .tabs__bar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 2px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+
+  .tabs__tab {
+    margin: 0;
+    padding: var(--space-1) var(--space-3);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--fg-dim);
+    font-family: inherit;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    cursor: pointer;
+    transition: color var(--transition), background-color var(--transition);
+  }
+
+  .tabs__tab:hover {
+    color: var(--fg-bright);
+  }
+
+  .tabs__tab:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  .tabs__tab[aria-selected="true"] {
+    border-bottom-color: var(--accent);
+    background: var(--border);
+    color: var(--fg-bright);
+  }
+
+  .tabs__panel {
+    margin-top: var(--space-4);
+  }
+
+  .tabs__panel[hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  import { playBeep } from "../../lib/sound";
+
+  function init(root: HTMLElement) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>(".tabs__tab"));
+
+    function select(tab: HTMLButtonElement, focus = false) {
+      const id = tab.dataset.tab!;
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      root.querySelectorAll<HTMLElement>(":scope > .tabs__panel").forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== id;
+      });
+      if (focus) tab.focus();
+      if (root.dataset.sound === "true") playBeep(700, 0.05);
+      root.dispatchEvent(new CustomEvent("tab-change", { bubbles: true, detail: { id } }));
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab));
+      tab.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") select(tabs[(i + 1) % tabs.length], true);
+        if (e.key === "ArrowLeft") select(tabs[(i - 1 + tabs.length) % tabs.length], true);
+      });
+    });
+  }
+
+  // Runs on first load and after every client-side page change; the marker
+  // attribute stops tabs that survived the swap from being bound twice.
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-tabs]:not([data-tabs-ready])").forEach((root) => {
+      root.dataset.tabsReady = "";
+      init(root);
+    });
+  });
+</script>

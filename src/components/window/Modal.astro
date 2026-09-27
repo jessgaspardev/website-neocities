@@ -1,0 +1,270 @@
+---
+/**
+ * Pop-up window over a dark backdrop.
+ *
+ * <Modal id="about-modal" title="ABOUT.EXE [v1.0]" shortTitle="ABOUT" icon="💾">
+ *   …content…
+ *   <Fragment slot="footer">Press <Kbd>ESC</Kbd> to close</Fragment>
+ * </Modal>
+ *
+ * Opens from any element:   <Button data-modal-open="about-modal">Open</Button>
+ * Closes from inside:          <button data-modal-close>Close</button>
+ * Or from JS:                 window.retroUI.modal.open("about-modal") / .close(id) / .toggle(id)
+ */
+import type { HTMLAttributes } from "astro/types";
+import WindowDots from "./WindowDots.astro";
+import Button from "../controls/Button.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  id: string;
+  title: string;
+  /** Shorter title for phones. */
+  shortTitle?: string;
+  icon?: string;
+  size?: "sm" | "md" | "lg";
+  /** Start open. */
+  open?: boolean;
+}
+
+const { id, title, shortTitle, icon, size = "md", open = false, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["modal", className]} id={id} data-modal hidden={!open} {...rest}>
+  <div
+    class:list={["modal__window", `modal__window--${size}`]}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby={`${id}-title`}
+    tabindex="-1"
+  >
+    <div class="modal__bar">
+      <div class="modal__heading">
+        <WindowDots muted closeAttrs={{ "data-modal-close": "" }} />
+        <span class="modal__title" id={`${id}-title`}>
+          {icon && <span aria-hidden="true">{icon}</span>}
+          {shortTitle ? (
+            <>
+              <span class="modal__title-short">{shortTitle}</span>
+              <span class="modal__title-long">{title}</span>
+            </>
+          ) : (
+            <span>{title}</span>
+          )}
+        </span>
+      </div>
+      <div class="modal__tools">
+        <slot name="header-actions" />
+        <Button size="sm" variant="danger" data-modal-close>
+          ✕ CLOSE<span class="modal__esc"> [ESC]</span>
+        </Button>
+      </div>
+    </div>
+
+    <div class="modal__body">
+      <slot />
+    </div>
+
+    {
+      Astro.slots.has("footer") && (
+        <div class="modal__footer">
+          <slot name="footer" />
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4) var(--space-2);
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    user-select: none;
+  }
+
+  .modal[hidden] {
+    display: none;
+  }
+
+  .modal__window {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 94vh;
+    margin: auto 0;
+    overflow: hidden;
+    border: 2px solid var(--border-active);
+    border-radius: 2px;
+    background: var(--bg);
+    box-shadow: var(--shadow-window);
+    color: var(--fg);
+    font-family: var(--font);
+  }
+
+  .modal__window:focus {
+    outline: none;
+  }
+
+  .modal__window--sm { max-width: 28rem; }
+  .modal__window--md { max-width: 36rem; }
+  .modal__window--lg { max-width: 42rem; }
+
+  .modal__bar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    background: var(--statusbar-bg);
+  }
+
+  .modal__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .modal__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: var(--space-1);
+    overflow: hidden;
+    color: var(--fg-bright);
+    font-size: var(--text-small);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .modal__tools {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .modal__title-long,
+  .modal__esc {
+    display: none;
+  }
+
+  .modal__body {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .modal__footer {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: 6px var(--space-3);
+    border-top: 1px solid var(--border);
+    background: var(--statusbar-bg);
+    color: var(--fg-dim);
+    font-size: var(--text-micro);
+  }
+
+  @media (min-width: 640px) {
+    .modal {
+      padding: var(--space-6);
+    }
+
+    .modal__window {
+      max-height: 90vh;
+    }
+
+    .modal__title,
+    .modal__footer {
+      font-size: var(--text-xs);
+    }
+
+    .modal__footer {
+      font-size: var(--text-tiny);
+    }
+
+    .modal__title-short {
+      display: none;
+    }
+
+    .modal__title-long,
+    .modal__esc {
+      display: inline;
+    }
+  }
+</style>
+
+<script>
+  import { expose } from "../../lib/global";
+
+  let lastFocus: HTMLElement | null = null;
+
+  function getModal(id: string) {
+    return document.getElementById(id) as HTMLElement | null;
+  }
+
+  function open(id: string) {
+    const modal = getModal(id);
+    if (!modal || !modal.hidden) return;
+    lastFocus = document.activeElement as HTMLElement | null;
+    modal.hidden = false;
+    modal.querySelector<HTMLElement>(".modal__window")?.focus();
+    modal.dispatchEvent(new CustomEvent("modal-open"));
+  }
+
+  function close(id: string) {
+    const modal = getModal(id);
+    if (!modal || modal.hidden) return;
+    modal.hidden = true;
+    modal.dispatchEvent(new CustomEvent("modal-close"));
+    lastFocus?.focus?.();
+  }
+
+  function toggle(id: string, force?: boolean) {
+    const modal = getModal(id);
+    if (!modal) return;
+    const shouldOpen = force ?? modal.hidden;
+    if (shouldOpen) open(id);
+    else close(id);
+  }
+
+  function isOpen(id: string) {
+    const modal = getModal(id);
+    return Boolean(modal && !modal.hidden);
+  }
+
+  expose("modal", { open, close, toggle, isOpen });
+
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+
+    const opener = target.closest<HTMLElement>("[data-modal-open]");
+    if (opener) {
+      open(opener.dataset.modalOpen!);
+      return;
+    }
+
+    const closer = target.closest<HTMLElement>("[data-modal-close]");
+    const modal = target.closest<HTMLElement>("[data-modal]");
+    if (modal && (closer || target === modal)) close(modal.id);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const openModals = document.querySelectorAll<HTMLElement>("[data-modal]:not([hidden])");
+    const top = openModals[openModals.length - 1];
+    if (top) close(top.id);
+  });
+</script>

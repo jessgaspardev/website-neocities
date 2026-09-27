@@ -1,8 +1,46 @@
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>jessgaspar.dev - Web Designer and Developer</title>
-	</head>
+---
+import { ClientRouter } from "astro:transitions";
+import ThemeScript from "../theme/ThemeScript.astro";
+import { PORTFOLIO_DATA } from "../../data/portfolio";
+const { developer } = PORTFOLIO_DATA;
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `Home`,
+  description = PORTFOLIO_DATA.developer.bio,
+} = Astro.props;
+---
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} // {PORTFOLIO_DATA.developer.handle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0a120b" />
+    <ThemeScript />
+    <ClientRouter />
+    <script>
+      // On navigation the client router replaces <html>'s attributes with the new
+      // page's. Theme and CRT settings live there (set once by inline scripts),
+      // so carry them over or the page flashes back to the defaults.
+      const KEEP = ["data-theme", "data-crt", "data-crt-intensity", "data-crt-flicker", "style"];
+
+      document.addEventListener("astro:before-swap", (event) => {
+        const from = document.documentElement;
+        const to = event.newDocument.documentElement;
+        for (const name of KEEP) {
+          const value = from.getAttribute(name);
+          if (value === null) to.removeAttribute(name);
+          else to.setAttribute(name, value);
+        }
+      });
+    </script>
+</head>

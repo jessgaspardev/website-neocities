@@ -1,0 +1,186 @@
+---
+/**
+ * "neofetch"-style intro card: ASCII banner + status on the left,
+ * spec sheet and color palette on the right.
+ *
+ * <SystemInfo
+ *   banner={asciiName}
+ *   status="OPEN FOR COLLABORATIONS"
+ *   alias="jess@home"
+ *   specs={{ OS: "Arch Linux", Editor: "Neovim" }}
+ * />
+ */
+import type { HTMLAttributes } from "astro/types";
+import Card from "./Card.astro";
+import StatusDot from "../feedback/StatusDot.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  banner: string;
+  status?: string;
+  alias?: string;
+  specs?: Record<string, string>;
+  palette?: string[];
+  label?: string;
+}
+
+const {
+  banner,
+  status,
+  alias,
+  specs = {},
+  label = "SYSTEM INFO",
+  ...rest
+} = Astro.props;
+---
+
+<Card label={label} {...rest}>
+  <div class="sysinfo">
+    <div class="sysinfo__art">
+      <pre class="sysinfo__banner">{banner}</pre>
+      {
+        status && (
+          <div class="sysinfo__status">
+            <StatusDot size={10} animation="ping" />
+            <span>{status}</span>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="sysinfo__info">
+      {
+        alias && (
+          <div class="sysinfo__alias">
+            <span>{alias}</span>
+            <span class="sysinfo__rule" aria-hidden="true">-------------------</span>
+          </div>
+        )
+      }
+      <dl class="sysinfo__specs">
+        {
+          Object.entries(specs).map(([key, value]) => (
+            <div>
+              <dt>{key}:</dt> <dd>{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</Card>
+
+<style>
+  .sysinfo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: center;
+    font-size: var(--text-xs);
+  }
+
+  .sysinfo__art {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .sysinfo__banner {
+    margin: 0;
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-size: var(--text-small);
+    font-weight: 700;
+    line-height: 1;
+    white-space: pre;
+    user-select: none;
+  }
+
+  .sysinfo__status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: var(--space-5) 0 0 var(--space-3);
+    color: var(--success);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .sysinfo__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .sysinfo__alias {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg-bright);
+    font-weight: 700;
+  }
+
+  .sysinfo__rule {
+    overflow: hidden;
+    color: var(--fg-dim);
+    font-weight: 400;
+  }
+
+  .sysinfo__specs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+  }
+
+  .sysinfo__specs dt,
+  .sysinfo__specs dd {
+    display: inline;
+    margin: 0;
+  }
+
+  .sysinfo__specs dt {
+    color: var(--fg-bright);
+    font-weight: 700;
+  }
+
+  .sysinfo__specs dd {
+    color: var(--fg);
+  }
+
+  .sysinfo :global(.swatches) {
+    padding-top: var(--space-2);
+  }
+
+  @media (min-width: 640px) {
+    .sysinfo__specs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) {
+    .sysinfo {
+      font-size: var(--text-sm);
+    }
+
+    .sysinfo__banner {
+      font-size: var(--text-xs);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sysinfo {
+      grid-template-columns: 5fr 7fr;
+    }
+
+    .sysinfo__info {
+      padding: 0 0 0 var(--space-6);
+      border-top: 0;
+      border-left: 1px solid var(--border);
+    }
+  }
+</style>

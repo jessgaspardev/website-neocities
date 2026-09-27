@@ -1,0 +1,82 @@
+---
+import ProjectCard from "@/components/content/ProjectCard.astro";
+import Layout from "../layouts/Layout.astro";
+import Section from "@/components/surfaces/Section.astro";
+import Stack from "@/components/layout/Stack.astro";
+import Tabs from "@/components/window/Tabs.astro";
+---
+
+<Layout
+  title="Coding Projects"
+  description="Selected showcase of websites, apps and other coding experiments."
+>
+  <Section id="dev" title="DEV.PHP" subtitle="Coding Projects" meta="[WORK]">
+    <Tabs
+      tabs={[
+        { id: "websites", label: "Websites" },
+        { id: "apps", label: "Web Applications" },
+        { id: "experiments", label: "Experiments" },
+      ]}
+    >
+      <Stack slot="websites" gap={4}>
+        <ProjectCard
+          title="Great Seal Studios"
+          badge="Gaming Studio"
+          meta={[
+            { label: "Partner", value: "Great Seal Studios" },
+            { label: "Role", value: "Web Engineer", tone: "success" },
+            { value: "2025 – now" },
+          ]}
+          description="Indie game studio website designed to showcase the projects being developed by the studio as well as lore for the dark fantasy world in which the projects take place in a shared universe."
+          listTitle="Key Contributions:"
+          items={["Web Design", "Development", "Website Maintenance"]}
+          tags={["Astro"]}
+          link={{ href: "https://greatsealstudios.com", label: "View Website ↗" }}
+        />
+        <ProjectCard
+          title="Unearthed Shelf"
+          badge="Directory"
+          meta={[
+            { label: "Role", value: "Web Developer", tone: "success" },
+            { value: "2026" },
+          ]}
+          description="Unearthed Shelf is a directory that makes it easy to find classic science-fiction books to buy. It's a curated collection that only contains popular books, underrated masterpieces and hidden gems."
+          tags={["Astro"]}
+          link={{ href: "https://unearthedshelf.com", label: "View Website ↗" }}
+        />
+      </Stack>
+
+      <div slot="apps">
+        <Stack slot="apps" gap={4}>
+        <ProjectCard
+          title="myMedia"
+          badge="Media Tracker"
+          meta={[
+            { label: "Role", value: "Creator", tone: "success" },
+            { value: "2026 – now" },
+          ]}
+          description="myMedia is a media tracker web application where users can log and track movies, shows, games, books and music into one sharable page."
+          tags={["Laravel", "Svelte"]}
+          link={{ href: "", label: "Coming Soon! ↗" }}
+        />
+      </Stack>
+      </div>
+      <div slot="experiments">
+        <Stack slot="experiments" gap={4}>
+          <ProjectCard
+            title="Easy DnD Rolls"
+            badge="Dice Roller"
+            meta={[
+              { label: "Role", value: "Developer", tone: "success" },
+              { value: "2023" },
+            ]}
+            description="Easy DnD Rolls is a simple dice roller application webpage that has all the required functionality for Dungeon and Dragons including various dices, modifiers, and advantage/disadvantage rolls."
+            tags={["HTML/CSS/JavaScript"]}
+            link={{ href: "https://easy-dnd-rolls.pages.dev", label: "Roll The Dice ↗" }}
+          />
+        </Stack>  
+      </div>
+    </Tabs>
+  </Section>
+</Layout>
+

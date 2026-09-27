@@ -1,0 +1,142 @@
+---
+/**
+ *
+ * <Card>…</Card>                                   panel (card background)
+ * <Card variant="inset">…</Card>                   darker page background, for cards inside cards
+ * <Card variant="inset" interactive>…</Card>       border lights up on hover
+ * <Card href="https://…" interactive="accent">     whole card is a link
+ * <Card label="SYSTEM INFO v2.4">…</Card>          little tab in the top-right corner
+ *
+ * Children are stacked vertically with `gap` (spacing step, default 3).
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, spaceVar } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  variant?: "panel" | "inset" | "ghost";
+  /** true = active border color on hover, "accent" = accent color on hover. */
+  interactive?: boolean | "accent";
+  dashed?: boolean;
+  padding?: "none" | "sm" | "md" | "lg";
+  gap?: number;
+  label?: string;
+  as?: "div" | "section" | "article" | "aside" | "li" | "form";
+  href?: string;
+  target?: string;
+  rel?: string;
+}
+
+const {
+  variant = "panel",
+  interactive = false,
+  dashed = false,
+  padding = "md",
+  gap = 3,
+  label,
+  as = "div",
+  href,
+  target,
+  rel,
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? "a" : as;
+const linkRel = rel ?? (target === "_blank" ? "noopener noreferrer" : undefined);
+---
+
+<Tag
+  class:list={[
+    "card",
+    `card--${variant}`,
+    `card--pad-${padding}`,
+    {
+      "card--interactive": interactive === true,
+      "card--interactive-accent": interactive === "accent",
+      "card--dashed": dashed,
+      "card--labelled": label,
+    },
+    className,
+  ]}
+  style={mergeStyle(`--_gap: ${spaceVar(gap)}`, style)}
+  href={href}
+  target={href ? target : undefined}
+  rel={href ? linkRel : undefined}
+  {...rest}
+>
+  {label && <div class="card__label">{label}</div>}
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--_gap);
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--fg);
+    font-family: var(--font);
+    text-decoration: none;
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .card[hidden] {
+    display: none;
+  }
+
+  .card--panel {
+    background: var(--bg-card);
+  }
+
+  .card--inset {
+    background: var(--bg);
+  }
+
+  .card--ghost {
+    background: transparent;
+  }
+
+  .card--dashed {
+    border-style: dashed;
+  }
+
+  .card--pad-none { padding: 0; }
+  .card--pad-sm { padding: var(--space-3); }
+  .card--pad-md { padding: var(--space-4); }
+  .card--pad-lg { padding: var(--space-4); }
+
+  @media (min-width: 640px) {
+    .card--pad-lg { padding: var(--space-5); }
+  }
+
+  .card--interactive:hover {
+    border-color: var(--border-active);
+  }
+
+  .card--interactive-accent:hover {
+    border-color: var(--accent);
+  }
+
+  .card--labelled {
+    overflow: hidden;
+  }
+
+  .card__label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 8px;
+    background: var(--border);
+    color: var(--fg-dim);
+    font-size: var(--text-tiny);
+    font-weight: 700;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+  }
+</style>

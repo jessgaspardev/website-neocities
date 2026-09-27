@@ -1,0 +1,64 @@
+---
+/**
+ * Label + form control + optional hint/error.
+ *
+ * <Field label="EMAIL:" for="email" hint="email>
+ *   <Input id="email" type="email" />
+ * </Field>
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  label: string;
+  /** id of the control inside, so clicking the label focuses it. */
+  for?: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+}
+
+const { label, for: htmlFor, hint, error, required = false, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["field", className]} {...rest}>
+  <label class="field__label" for={htmlFor}>
+    {label}{required && <span class="field__required" aria-hidden="true">*</span>}
+  </label>
+  <slot />
+  {error ? <p class="field__error">✖ {error}</p> : hint && <p class="field__hint">{hint}</p>}
+</div>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-family: var(--font);
+  }
+
+  .field__label {
+    color: var(--fg-bright);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .field__required {
+    margin-left: 2px;
+    color: var(--accent);
+  }
+
+  .field__hint,
+  .field__error {
+    margin: 0;
+    font-size: var(--text-tiny);
+  }
+
+  .field__hint {
+    color: var(--fg-dim);
+  }
+
+  .field__error {
+    color: var(--danger);
+    font-weight: 700;
+  }
+</style>

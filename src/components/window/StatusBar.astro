@@ -1,0 +1,92 @@
+---
+/**
+ * Bottom status bar with left / center / right areas.
+ *
+ * <StatusBar>
+ *   <span>UTF-8</span>
+ *   <RadioTicker slot="center" />
+ *   <Fragment slot="right"><Clock /> <span class="text-accent">v1.0</span></Fragment>
+ * </StatusBar>
+ *
+ * Add the class "hide-mobile" to any item to hide it below 768px.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"footer"> {
+  /** Hide the center area on phones (default true). */
+  hideCenterOnMobile?: boolean;
+  /** Show the green "STATUS 200 OK" indicator on the left. */
+  status?: string | false;
+}
+
+const { hideCenterOnMobile = true, status = "STATUS 200 OK", class: className, ...rest } = Astro.props;
+---
+
+<footer class:list={["status", { "status--hide-center": hideCenterOnMobile }, className]} {...rest}>
+  <div class="status__group">
+    {
+      status && (
+        <span class="status__ok">
+          <span class="status__ok-dot" aria-hidden="true" />
+          {status}
+        </span>
+      )
+    }
+    <slot />
+  </div>
+  {
+    Astro.slots.has("center") && (
+      <div class="status__center">
+        <slot name="center" />
+      </div>
+    )
+  }
+  <div class="status__group">
+    <slot name="right" />
+  </div>
+</footer>
+
+<style>
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: 6px var(--space-4);
+    border-top: 1px solid var(--border);
+    background: var(--statusbar-bg);
+    color: var(--fg-dim);
+    font-family: var(--font);
+    font-size: var(--text-small);
+    user-select: none;
+  }
+
+  .status__group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .status__ok {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--success);
+    font-weight: 700;
+  }
+
+  .status__ok-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--success);
+  }
+
+  @media (max-width: 767px) {
+    .status--hide-center .status__center,
+    .status :global(.hide-mobile) {
+      display: none;
+    }
+  }
+</style>

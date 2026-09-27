@@ -1482,4 +1482,19 @@ function main() {
             <button class="lb-nav" id="lb_next"></button>
         </div>`
     document.getElementsByTagName('body')[0].appendChild(lbCore);
+
+    // Astro's client router swaps <head> and <body> on page changes, which would
+    // drop the injected stylesheet and lightbox. Grids build themselves the moment
+    // they're inserted (mid-swap) and need the lightbox by then, so carry both
+    // into the incoming page *before* the swap.
+    document.addEventListener("astro:before-swap", (event) => {
+        const newDoc = event.newDocument;
+        if (!newDoc.head.querySelector(`link[href='${stylePath}']`)) {
+            const cssLink = newDoc.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.href = stylePath;
+            newDoc.head.appendChild(cssLink);
+        }
+        newDoc.body.appendChild(lbCore);
+    });
 }

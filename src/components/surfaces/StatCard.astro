@@ -1,0 +1,66 @@
+---
+/**
+ * Centered metric counter.
+ * <StatCard label="TOTAL STARS ⭐" value={128} tone="warning" />
+ *
+ * To update from JS:
+ * <StatCard id="stars" … />  →  document.querySelector("#stars [data-stat-value]").textContent = "130"
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"div"> {
+  label: string;
+  value: string | number;
+  tone?: Tone;
+}
+
+const { label, value, tone = "bright", class: className, style, ...rest } = Astro.props;
+---
+
+<div class:list={["stat", className]} style={mergeStyle(`--_tone: ${toneVar(tone)}`, style)} {...rest}>
+  <div class="stat__label">{label}</div>
+  <div class="stat__value" data-stat-value>{value}</div>
+</div>
+
+<style>
+  .stat {
+    min-width: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: var(--font);
+    text-align: center;
+  }
+
+  .stat__label {
+    overflow: hidden;
+    color: var(--fg-dim);
+    font-size: var(--text-micro);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stat__value {
+    margin-top: 2px;
+    color: var(--_tone);
+    font-size: var(--text-md);
+    font-weight: 700;
+  }
+
+  @media (min-width: 640px) {
+    .stat {
+      padding: var(--space-3);
+    }
+
+    .stat__label {
+      font-size: var(--text-tiny);
+    }
+
+    .stat__value {
+      margin-top: var(--space-1);
+      font-size: var(--text-lg);
+    }
+  }
+</style>

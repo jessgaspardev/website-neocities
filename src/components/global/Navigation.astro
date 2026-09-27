@@ -1,60 +1,16 @@
-<nav>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li>  
-        	<details>
-            <summary>Developer Work</summary>
-            <ul>
-              <li><a href="/work/websites">Websites</a></li>
-              <li><a href="/work/apps">Web Apps</a></li>
-              <li><a href="/work/experiments">Experiments</a></li>
-            </ul>
-          </details>
-      </li>
-      <li>  
-        	<details>
-            <summary>Personal</summary>
-            <ul>
-              <li><a href="/about">About me</a></li>
-              <li><a href="/art">Art</a></li>
-              <li><a href="/now">Now</a></li>
-              <li><a href="/contact">Contact me</a></li>
-            </ul>
-          </details>
-      </li>
-      <li>  
-        	<details>
-            <summary>Resources</summary>
-            <ul>
-              <li><a href="/tools">Tools I Use</a></li>
-              <li><a href="/bookmarks">Bookmarks</a></li>
-            </ul>
-          </details>
-      </li>
-      <li>  
-        	<details>
-            <summary>This Website</summary>
-            <ul>
-              <li><a href="/roadmap">Roadmap</a></li>
-              <li><a href="/credits">Credits</a></li>
-            </ul>
-          </details>
-      </li>
-    </ul>
-</nav>
+---
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+import NavItem from "@/components/content/NavItem.astro";
+import NavList from "@/components/content/NavList.astro";
+---
 
-<script>
-(function () {
-  var mq = window.matchMedia('(min-width: 801px)');
-  var detailsEls = document.querySelectorAll('nav details');
-
-  function applyState(e) {
-    detailsEls.forEach(function (d) {
-      d.open = e.matches; 
-    });
-  }
-
-  applyState(mq);                    // run once on load
-  mq.addEventListener('change', applyState); // re-run on resize/rotate
-})();
-</script>
+<SectionHeader size="sm" icon="📁" title="EXPLORER" meta="CONTENTS" />
+<NavList>
+  <NavItem href="/" num="1." meta="start">Home</NavItem>
+  <NavItem href="/about" num="2." meta="me">about</NavItem>
+  <NavItem href="/dev" num="3." meta="projects">dev</NavItem>
+  <NavItem href="/art" num="4." meta="gallery">art</NavItem>
+  <NavItem href="/now" num="5." meta="updates">now</NavItem>
+  <NavItem href="/tools" num="6." meta="list">tools</NavItem>
+  <NavItem href="/bookmarks" num="7." meta="resources">bookmarks</NavItem>
+</NavList>

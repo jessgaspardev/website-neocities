@@ -1,0 +1,198 @@
+---
+/**
+ * Terminal-style button. Renders an <a> when `href` is set.
+ *
+ * <Button>Default</Button>
+ * <Button variant="primary" size="lg" type="submit">SEND PAYLOAD [ENTER]</Button>
+ * <Button variant="accent" href="/cv.pdf"><span slot="icon">📄</span> CV</Button>
+ * <Button variant="dashed" block align="start">🕹️ pong.sh</Button>
+ *
+ * variant: default | primary | accent | ghost | dashed | danger
+ * size:    sm (header/toolbar) | md | lg
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+type Variant = "default" | "primary" | "accent" | "ghost" | "dashed" | "danger";
+
+interface Props extends Omit<HTMLAttributes<"button">, "type"> {
+  variant?: Variant;
+  size?: "sm" | "md" | "lg";
+  /** Full width. */
+  block?: boolean;
+  /** Content alignment (use "start" for menu-like buttons). */
+  align?: "center" | "start";
+  /** Soft outer glow in the theme color. */
+  glow?: boolean;
+  /** Override the text color. */
+  tone?: Tone;
+  type?: "button" | "submit" | "reset";
+  href?: string;
+  target?: string;
+  rel?: string;
+}
+
+const {
+  variant = "default",
+  size = "md",
+  block = false,
+  align = "center",
+  glow = false,
+  tone,
+  type = "button",
+  href,
+  target,
+  rel,
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const linkRel = rel ?? (target === "_blank" ? "noopener noreferrer" : undefined);
+const toneStyle = tone ? `--_tone: ${toneVar(tone)}` : undefined;
+---
+
+<Tag
+  class:list={[
+    "btn",
+    `btn--${variant}`,
+    `btn--${size}`,
+    { "btn--block": block, "btn--start": align === "start", "btn--glow": glow, "btn--tone": tone },
+    className,
+  ]}
+  href={href}
+  target={href ? target : undefined}
+  rel={href ? linkRel : undefined}
+  type={href ? undefined : type}
+  style={toneStyle ? mergeStyle(toneStyle, style) : style}
+  {...rest}
+>
+  <slot name="icon" />
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      color var(--transition),
+      background-color var(--transition),
+      border-color var(--transition),
+      transform 100ms ease;
+  }
+
+  .btn:hover {
+    border-color: var(--border-active);
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Sizes */
+  .btn--sm {
+    padding: 4px 8px;
+    font-size: var(--text-xs);
+  }
+
+  .btn--md {
+    padding: 6px 12px;
+    font-size: var(--text-xs);
+  }
+
+  .btn--lg {
+    padding: 8px 20px;
+    font-size: var(--text-xs);
+  }
+
+  .btn--block {
+    display: flex;
+    width: 100%;
+  }
+
+  .btn--start {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  /* Variants */
+  .btn--primary {
+    border-color: var(--border-active);
+    background: var(--border);
+  }
+
+  .btn--primary:hover {
+    background: var(--border-active);
+    color: var(--bg);
+  }
+
+  .btn--accent {
+    color: var(--accent);
+  }
+
+  .btn--accent:hover {
+    border-color: var(--accent);
+  }
+
+  .btn--ghost {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .btn--ghost:hover {
+    border-color: transparent;
+    background: var(--border);
+  }
+
+  .btn--dashed {
+    border-style: dashed;
+    background: transparent;
+    color: var(--accent);
+  }
+
+  .btn--dashed:hover {
+    border-color: var(--border);
+    background: var(--border);
+  }
+
+  .btn--danger:hover {
+    border-color: var(--danger-strong);
+    color: var(--danger);
+  }
+
+  .btn--tone {
+    color: var(--_tone);
+  }
+
+  .btn--glow {
+    box-shadow: 0 0 10px var(--glow);
+  }
+</style>

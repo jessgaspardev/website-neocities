@@ -1,0 +1,124 @@
+---
+/**
+ * Terminal heading row with an underline:  "> CAT BIO.TXT // ABOUT ME     [READ-ONLY]"
+ *
+ * <SectionHeader title="CAT BIO.TXT" subtitle="ABOUT ME" meta="[READ-ONLY]" />
+ * <SectionHeader size="sm" icon="📁" title="EXPLORER" meta="CONTENTS" />   (small, accent — for sub-cards)
+ * <SectionHeader title="GITHUB.SH"><span slot="meta">…live dot…</span></SectionHeader>
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  title: string;
+  subtitle?: string;
+  /** Leading prompt symbol; set to "" to hide. */
+  prompt?: string;
+  icon?: string;
+  meta?: string;
+  size?: "md" | "sm";
+  level?: 2 | 3 | 4;
+}
+
+const { title, subtitle, prompt, icon, meta, size = "md", level, class: className, ...rest } = Astro.props;
+const Heading = `h${level ?? (size === "sm" ? 3 : 2)}` as "h2" | "h3" | "h4";
+const promptChar = prompt ?? (size === "md" && !icon ? ">" : "");
+const hasMetaSlot = Astro.slots.has("meta");
+---
+
+<div class:list={["sh", `sh--${size}`, className]} {...rest}>
+  <Heading class="sh__title">
+    {promptChar && <span class="sh__prompt" aria-hidden="true">{promptChar}</span>}
+    {icon && <span aria-hidden="true">{icon}</span>}
+    <span class="sh__text">{title}{subtitle && <span class="sh__sub"> // {subtitle}</span>}</span>
+  </Heading>
+  {(meta || hasMetaSlot) && (
+    <div class="sh__meta">
+      {meta}
+      <slot name="meta" />
+    </div>
+  )}
+</div>
+
+<style>
+  .sh {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font);
+  }
+
+  .sh__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    font-weight: 700;
+    line-height: var(--leading-tight);
+    text-transform: uppercase;
+  }
+
+  .sh__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sh__prompt {
+    color: var(--accent);
+  }
+
+  .sh__meta {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    color: var(--fg-dim);
+  }
+
+  /* md: section headings */
+  .sh--md {
+    padding-bottom: var(--space-3);
+  }
+
+  .sh--md .sh__title {
+    color: var(--fg-bright);
+    font-size: var(--text-xs);
+  }
+
+  .sh--md .sh__meta {
+    font-size: var(--text-tiny);
+  }
+
+  @media (min-width: 640px) {
+    .sh--md {
+      flex-wrap: nowrap;
+    }
+
+    .sh--md .sh__title {
+      gap: var(--space-2);
+      font-size: var(--text-md);
+    }
+
+    .sh--md .sh__meta {
+      font-size: var(--text-xs);
+    }
+  }
+
+  /* sm: sub-card headings */
+  .sh--sm {
+    padding-bottom: var(--space-2);
+  }
+
+  .sh--sm .sh__title {
+    color: var(--accent);
+    font-size: var(--text-xs);
+  }
+
+  .sh--sm .sh__meta {
+    font-size: var(--text-tiny);
+  }
+</style>

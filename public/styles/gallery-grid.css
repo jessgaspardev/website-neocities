@@ -76,9 +76,9 @@
 
 :root {
     --nav-width: 40px;
-    --link-color: greenyellow;
-    --link-hover-color: white;
-    --terminal-green: rgb(0, 219, 0);
+    /* Colors use the site theme tokens (src/styles/tokens.css) so the gallery follows the theme picker */
+    --link-color: var(--accent);
+    --link-hover-color: var(--fg-bright);
 }
 :root:has(.lb-open) {
     overflow: hidden;
@@ -115,12 +115,11 @@ body {
     width: 100%;
     height: 100%;
 
-    background: rgba(0, 0, 0, 0);
-    backdrop-filter: blur(5px);
+    background: linear-gradient(var(--glow), var(--glow)), color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: grayscale(100%) brightness(60%) blur(5px);
 
     font-family: monospace;
     font-size: 1rem;
-    backdrop-filter: invert(61%) sepia(58%) hue-rotate(86deg) brightness(50%) contrast(200%) blur(5px);
 }
 #lb a {
     color: var(--link-color);
@@ -177,8 +176,8 @@ body {
 
     font-size: 20px;
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--terminal-green);
-    color: var(--terminal-green);
+    border: 1px solid var(--fg);
+    color: var(--fg);
 }
 #lb_smallExitButton:before {
     content: "X";
@@ -209,16 +208,16 @@ body {
     padding: var(--padding);
 
     box-sizing: content-box;
-    border: var(--border-width) solid var(--terminal-green);
-    background: black;
+    border: var(--border-width) solid var(--fg);
+    background: var(--bg);
 }
 #lb_image:before {
-    color: var(--terminal-green);
+    color: var(--fg);
 }
 #lb_imageWrapper.lb-noframe #lb_image{
     border-color: transparent;
     background: transparent;
-    filter: drop-shadow(1px 1px 0px green) drop-shadow(-1px -1px 0px green) drop-shadow(1px -1px 0px green) drop-shadow(-1px 1px 0px green) 
+    filter: drop-shadow(1px 1px 0px var(--fg-dim)) drop-shadow(-1px -1px 0px var(--fg-dim)) drop-shadow(1px -1px 0px var(--fg-dim)) drop-shadow(-1px 1px 0px var(--fg-dim)) 
 }
 
 /* Lightbox info box */
@@ -228,12 +227,12 @@ body {
     gap: 5px;
     z-index: 1;
 
-    color: rgb(179, 226, 203);
-    background-color: rgb(0, 0, 0);
+    color: var(--fg);
+    background-color: var(--bg-card);
     margin: 0 auto;
     padding: 1em 1em;
 
-    border: 1px solid var(--terminal-green);
+    border: 1px solid var(--fg);
     box-sizing: border-box;
 }
 #lb_desc {
@@ -245,9 +244,9 @@ body {
     font-size: 0.9em;
     font-family: monospace;
     padding: 0px 2px;
-    background-color: black;
-    color: var(--terminal-green);
-    box-shadow: inset 1px 1px 0px green, inset -1px -1px 0px green;
+    background-color: var(--bg);
+    color: var(--fg);
+    box-shadow: inset 1px 1px 0px var(--fg-dim), inset -1px -1px 0px var(--fg-dim);
 }
 #lb_title {
     font-weight: bold;
@@ -255,7 +254,7 @@ body {
     padding: 0;
 }
 #lb_title, #lb_desc {
-    color: var(--terminal-green);
+    color: var(--fg);
 }
 #lb_tags {
     display: flex;
@@ -267,7 +266,7 @@ body {
     font-size: 0.85em;
     border: none;
     padding: 0;
-    color: var(--terminal-green);
+    color: var(--fg);
 }
 #lb_tags span:before {
     content: "["
@@ -297,10 +296,10 @@ body {
     z-index: 1;
     cursor: pointer;
 
-    color: var(--terminal-green);
+    color: var(--fg);
     background: transparent;
     backdrop-filter: brightness(60%);
-    border: 1px solid var(--terminal-green);
+    border: 1px solid var(--fg);
 
     min-width: var(--nav-width);
     max-width: var(--nav-width);
@@ -313,13 +312,13 @@ body {
 .lb-nav:hover, .lb-nav.lb-pressed {
     backdrop-filter: brightness(50%);
     transition: 0.1s;
-    color: var(--terminal-green);
-    background-color:rgba(0, 219, 0, 0.2);
+    color: var(--fg);
+    background-color: color-mix(in srgb, var(--fg) 20%, transparent);
 }
 .lb-nav:disabled {
     backdrop-filter: brightness(60%);
-    color: rgba(0, 219, 0, 0.2);
-    border-color: rgba(0, 219, 0, 0.2);
+    color: color-mix(in srgb, var(--fg) 20%, transparent);
+    border-color: color-mix(in srgb, var(--fg) 20%, transparent);
     background-color: rgba(0, 0, 0, 0.5);
 }
 #lb_next:before {
@@ -343,7 +342,7 @@ body {
         background: linear-gradient(
             90deg,
             rgba(0, 0, 0, 0) 0%,
-            rgba(6, 97, 1, 0.3) 100%
+            color-mix(in srgb, var(--fg-dim) 30%, transparent) 100%
         );
     }
     #lb_prev {
@@ -351,7 +350,7 @@ body {
         left: 0%;
         background: linear-gradient(
             90deg,
-            rgba(6, 97, 1, 0.3) 0%,
+            color-mix(in srgb, var(--fg-dim) 30%, transparent) 0%,
             rgba(0, 0, 0, 0) 100%
         );
     }
@@ -370,18 +369,18 @@ body {
     justify-content: center;
     align-items: center;
 
-    color: gray;
+    color: var(--fg-dim);
     background: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100%;
 
-    border: 1px solid var(--terminal-green);
+    border: 1px solid var(--fg);
     box-sizing: border-box;
 }
 #lb_loading:before {
     content: "...";
     animation: loading 1s linear infinite;
-    color: var(--terminal-green);
+    color: var(--fg);
 }
 
 /* Gallery grid */
@@ -398,11 +397,11 @@ gallery-grid img:not(.g-gridCellImage) {
 .g-grid:empty {
     font-family: monospace;
     height: 50px;
-    border: 1px dashed green;
-    color: var(--terminal-green);
+    border: 1px dashed var(--border);
+    color: var(--fg);
 }
 .g-grid:empty:before {
-    color: white;
+    color: var(--fg-bright);
     content: "Nothing here!";
     margin: auto;
     padding: 5px;
@@ -426,8 +425,8 @@ gallery-grid img:not(.g-gridCellImage) {
     position: relative;
     margin: 8px;
     padding: 4px;
-    border: 1px solid var(--terminal-green);
-    background: rgb(0, 0, 0);
+    border: 1px solid var(--fg);
+    background: var(--bg);
     box-sizing: content-box;
     display: flex;
 }
@@ -436,15 +435,15 @@ gallery-grid img:not(.g-gridCellImage) {
     border-color: transparent;
 }
 .g-gridCell.g-noframe .g-gridCellImage {
-    filter: drop-shadow(1px 1px 0px green) drop-shadow(-1px -1px 0px green) drop-shadow(1px -1px 0px green) drop-shadow(-1px 1px 0px green);
+    filter: drop-shadow(1px 1px 0px var(--fg-dim)) drop-shadow(-1px -1px 0px var(--fg-dim)) drop-shadow(1px -1px 0px var(--fg-dim)) drop-shadow(-1px 1px 0px var(--fg-dim));
 }
 .g-gridCellImage {
     order: 1;
-    border: 2px solid var(--terminal-green);
+    border: 2px solid var(--fg);
     box-sizing: border-box;
 }
 .g-gridCellImage:before {
-    color: var(--terminal-green);
+    color: var(--fg);
 }
 .g-gridCell.g-noframe:hover .g-gridCellImage {
     filter: unset;
@@ -476,7 +475,7 @@ gallery-grid img:not(.g-gridCellImage) {
     transition: 0.5s ease !important;
 }
 .g-gridCell:hover {
-    background: rgba(0, 219, 0, 0.5);
+    background: color-mix(in srgb, var(--fg) 50%, transparent);
 }
 .g-gridCell:hover .g-gridCellEffect {
     transition: 0s ease !important;
@@ -497,11 +496,11 @@ gallery-grid img:not(.g-gridCellImage) {
 
     margin: 6px;
     padding: 5px;
-    background: black;
-    color: var(--terminal-green);
+    background: var(--bg);
+    color: var(--fg);
 
     font-size: 0.9rem;
-    border: 1px solid var(--terminal-green);
+    border: 1px solid var(--fg);
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -519,9 +518,9 @@ gallery-grid img:not(.g-gridCellImage) {
 }
 .g-gridCellCaption code {
     font-size: 0.9em;
-    background-color: black;
-    color: var(--terminal-green);
-    box-shadow: inset 1px 1px 0px green, inset -1px -1px 0px green;
+    background-color: var(--bg);
+    color: var(--fg);
+    box-shadow: inset 1px 1px 0px var(--fg-dim), inset -1px -1px 0px var(--fg-dim);
 }
 .g-gridCellCaption.g-smallScreen {
     display: none;
@@ -537,7 +536,7 @@ gallery-grid img:not(.g-gridCellImage) {
     justify-content: center;
     align-items: center;
 
-    color: var(--terminal-green);
+    color: var(--fg);
     box-sizing: border-box;
 
     width: 100%;
@@ -639,22 +638,22 @@ gallery-grid img:not(.g-gridCellImage) {
     gap: 5px;
     margin: 10px;
     font-family: monospace;
-    color: var(--terminal-green);
+    color: var(--fg);
     order: 300;
 }
 .g-pageNavButton {
     margin: 0;
     cursor: pointer;
-    background: black;
-    color: var(--terminal-green);
-    border: 1px solid var(--terminal-green);
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--fg);
 }
 .g-pageNavButton:disabled {
-    border-color: green;
-    color: green;
+    border-color: var(--border);
+    color: var(--fg-dim);
 }
 .g-pageNavButton:hover:not(:disabled) {
-    background: rgb(0, 73, 18);
+    background: var(--border);
 }
 .g-pageNavPrev:before {
     content: "<";
@@ -682,8 +681,8 @@ gallery-grid img:not(.g-gridCellImage) {
 }
 .g-sifter {
     display: flex;
-    color: var(--terminal-green);
-    accent-color: var(--terminal-green);
+    color: var(--fg);
+    accent-color: var(--fg);
     align-items: center;
 }
 .g-sifter span:not(.g-sifterName) {
@@ -692,7 +691,7 @@ gallery-grid img:not(.g-gridCellImage) {
 .g-sifterName {
     display: inline-block;
     text-transform: uppercase;
-    color: rgb(0, 173, 0);
+    color: var(--fg-dim);
     margin-right: 5px;
 }
 .g-inputs {

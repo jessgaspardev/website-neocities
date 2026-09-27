@@ -1,0 +1,48 @@
+---
+/**
+ * Live ticking clock (HH:MM:SS + suffix).
+ * <Clock />              14:05:33 LOCAL
+ * <Clock utc suffix="UTC" />
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"time"> {
+  suffix?: string;
+  utc?: boolean;
+}
+
+const { suffix = "LOCAL", utc = false, class: className, ...rest } = Astro.props;
+---
+
+<time class:list={["clock", className]} data-clock data-suffix={suffix} data-utc={String(utc)} {...rest}>
+  00:00:00 {suffix}
+</time>
+
+<style>
+  .clock {
+    color: var(--fg-bright);
+    font-family: var(--font);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  const clocks = document.querySelectorAll<HTMLElement>("[data-clock]");
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  function tick() {
+    const now = new Date();
+    clocks.forEach((el) => {
+      const utc = el.dataset.utc === "true";
+      const h = utc ? now.getUTCHours() : now.getHours();
+      const m = utc ? now.getUTCMinutes() : now.getMinutes();
+      const s = utc ? now.getUTCSeconds() : now.getSeconds();
+      el.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${el.dataset.suffix ?? ""}`.trim();
+    });
+  }
+
+  if (clocks.length) {
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>

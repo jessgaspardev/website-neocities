@@ -1,8 +1,282 @@
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "@/layouts/Layout.astro";
+import Button from "@/components/controls/Button.astro";
+import Input from "@/components/controls/Input.astro";
+import Stack from "@/components/layout/Stack.astro";
+import AsciiBlock from "@/components/surfaces/AsciiBlock.astro";
+import Callout from "@/components/surfaces/Callout.astro";
+import Card from "@/components/surfaces/Card.astro";
+import Section from "@/components/surfaces/Section.astro";
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+
+const bigAscii = `██╗  ██╗ ██████╗  ██╗  ██╗
+██║  ██║██╔═══██╗ ██║  ██║
+███████║██║   ██║ ███████║
+╚════██║██║   ██║ ╚════██║
+     ██║╚██████╔╝      ██║
+     ╚═╝ ╚═════╝       ╚═╝`;
 ---
 
-<Layout>
-    <h1>pagenotfound.exe</h1>
-    <p>Oops! It seems this page doesn't exist or it's broken! :(</p>
+<Layout
+  title="404 NOT FOUND"
+  description="404 Error: The requested virtual terminal address was not found."
+>
+  <Section
+    id="not-found"
+    title="PAGENOTFOUND.EXE"
+    subtitle="ERROR 404"
+    meta="[KERNEL PANIC]"
+    gap={5}
+  >
+    <Callout
+      variant="danger"
+      icon="⚠️"
+      title="[SYSTEM ERROR 404]"
+      badge="STATUS: 404 NOT FOUND"
+      pulse
+    >
+      KERNEL PANIC: REQUESTED ROUTE UNMAPPED
+    </Callout>
+
+    <AsciiBlock text={bigAscii} bare tone="accent" size="md" />
+
+    <Card variant="inset" gap={3}>
+      <SectionHeader size="sm" icon="⚡" title="DIAGNOSTIC LOG" meta="PANIC_TRACE_0x0404.LOG" />
+      <ul class="log">
+        <li><span class="text-accent">[0.000104]</span> INITIALIZING VIRTUAL FILESYSTEM AUDIT...</li>
+        <li>
+          <span class="text-accent">[0.000312]</span> TARGET ROUTE:
+          <code class="log__route" data-requested-path>loading...</code>
+        </li>
+        <li><span class="text-accent">[0.000589]</span> MEMORY POINTER RESOLVED TO 0x00000000 (NULL)</li>
+      </ul>
+      <Card padding="sm" gap={1}>
+        <p class="text-danger"><strong>&gt; ERROR_CAUSE:</strong> Sector memory unallocated or document relocated.</p>
+        <p class="text-dim">
+          &gt; SUGGESTED_ACTION: Return to root directory <strong class="text-accent">~/website</strong> or issue a command below.
+        </p>
+      </Card>
+    </Card>
+
+    <Stack direction="row" wrap gap={2}>
+      <Button variant="primary" href="/" data-404-home><span slot="icon">🚀</span> RETURN HOME [ / ]</Button>
+      <Button variant="accent" data-404-crt><span slot="icon">📺</span> TOGGLE CRT</Button>
+      <Button variant="danger" data-404-reboot><span slot="icon">🔄</span> SYSTEM REBOOT</Button>
+    </Stack>
+
+    <Card variant="inset" gap={3}>
+      <SectionHeader size="sm" icon="📟" title="EMERGENCY RECOVERY CONSOLE" meta="TYPE 'help' FOR COMMANDS" />
+      <div class="console__output" data-console-output aria-live="polite">
+        <p class="text-dim">Emergency terminal initialized. Type <strong class="text-accent">home</strong> to return to the website.</p>
+      </div>
+      <form class="console__form" data-console-form>
+        <span class="text-accent" aria-hidden="true"><strong>&gt;</strong></span>
+        <label for="console-input" class="sr-only">Console command</label>
+        <Input
+          id="console-input"
+          variant="bare"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Type 'home', 'crt', 'clear', or 'help'..."
+        />
+      </form>
+    </Card>
+  </Section>
 </Layout>
+
+<style>
+  p {
+    margin: 0;
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+  }
+
+  .log {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--fg-dim);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+  }
+
+  .log__route {
+    padding: 1px 4px;
+    border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    color: var(--danger);
+    font-family: var(--font);
+    font-weight: 700;
+    word-break: break-all;
+  }
+
+  .console__output {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-height: 160px;
+    overflow-y: auto;
+    color: var(--fg);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    white-space: pre-wrap;
+  }
+
+  /* Lines are added from the script, so they don't carry the scoped attribute */
+  .console__output :global(p) {
+    margin: 0;
+  }
+
+  .console__output :global(.is-strong) {
+    font-weight: 700;
+  }
+
+  .console__form {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-top: var(--space-1);
+  }
+
+  @media (min-width: 640px) {
+    .console__form :global(.input) {
+      font-size: var(--text-sm);
+    }
+  }
+</style>
+
+<script>
+  import { toggleCRT } from "../lib/crt";
+  import { playBeep, playErrorSound, playKeypressSound, playSuccessSound } from "../lib/sound";
+
+  type Segment = string | [text: string, className: string];
+
+  let output: HTMLElement | null = null;
+
+  /** Appends a console line. Text only (never innerHTML), so typed input can't inject markup. */
+  function log(segments: Segment[], className = "") {
+    if (!output) return;
+    const line = document.createElement("p");
+    if (className) line.className = className;
+    for (const segment of segments) {
+      if (typeof segment === "string") {
+        line.append(segment);
+      } else {
+        const span = document.createElement("span");
+        span.className = segment[1];
+        span.textContent = segment[0];
+        line.append(span);
+      }
+    }
+    output.append(line);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function goHome(delay: number) {
+    setTimeout(() => (window.location.href = "/"), delay);
+  }
+
+  function crt() {
+    const { enabled } = toggleCRT();
+    playBeep(700, 0.08);
+    log([`📺 CRT effect ${enabled ? "activated" : "deactivated"}.`], enabled ? "text-accent is-strong" : "text-dim");
+  }
+
+  function reboot() {
+    playErrorSound();
+    log(["🔄 Rebooting virtual system... Redirecting home."], "text-warning is-strong");
+    goHome(1000);
+  }
+
+  const HELP: [string, string][] = [
+    ["home / cd / exit", "Return to the home page"],
+    ["crt", "Toggle the CRT screen effect"],
+    ["reboot / panic", "Trigger system reboot sequence"],
+    ["clear / cls", "Clear console screen output"],
+  ];
+
+  function init() {
+    const form = document.querySelector<HTMLFormElement>("[data-console-form]");
+    const input = form?.querySelector("input");
+    output = document.querySelector<HTMLElement>("[data-console-output]");
+    if (!form) return; // not on the 404 page
+
+    // Error sound on load, and show the path that was actually requested
+    setTimeout(playErrorSound, 200);
+    const route = document.querySelector("[data-requested-path]");
+    if (route) route.textContent = window.location.pathname || "/unknown-route";
+
+    document.querySelector("[data-404-home]")?.addEventListener("click", () => playSuccessSound());
+    document.querySelector("[data-404-crt]")?.addEventListener("click", crt);
+    document.querySelector("[data-404-reboot]")?.addEventListener("click", reboot);
+
+    input?.addEventListener("keydown", () => playKeypressSound());
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!input) return;
+      const raw = input.value.trim();
+      if (!raw) return;
+
+      log([`> ${raw}`], "text-bright is-strong");
+      input.value = "";
+
+      switch (raw.toLowerCase()) {
+        case "help":
+          playBeep(600, 0.04);
+          log(["Available commands:"], "text-accent is-strong");
+          for (const [cmd, desc] of HELP) {
+            log(["  ", [cmd.padEnd(18), "text-bright is-strong"], `- ${desc}`]);
+          }
+          break;
+
+        case "home":
+        case "cd":
+        case "exit":
+        case "cd ~":
+        case "cd /":
+          playSuccessSound();
+          log(["🚀 Redirecting to root filesystem ~/website..."], "text-success is-strong");
+          goHome(600);
+          break;
+
+        case "crt":
+          crt();
+          break;
+
+        case "reboot":
+        case "panic":
+          reboot();
+          break;
+
+        case "clear":
+        case "cls":
+          playBeep(450, 0.04);
+          output?.replaceChildren();
+          break;
+
+        default:
+          playErrorSound();
+          log(
+            [
+              "bash: command not found: ",
+              [raw, "text-danger is-strong"],
+              ". Type '",
+              ["home", "text-accent is-strong"],
+              "' or '",
+              ["help", "text-accent is-strong"],
+              "'.",
+            ],
+            "text-danger",
+          );
+          break;
+      }
+    });
+  }
+
+  // Runs on first load and after every client-side page change.
+  document.addEventListener("astro:page-load", init);
+</script>

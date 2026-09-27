@@ -1,0 +1,62 @@
+---
+/**
+ * Four tiny bouncing bars ("now playing" indicator).
+ * <Equalizer active />
+ *
+ * Toggle from JS: el.dataset.active = "true" | "false"
+ */
+import type { HTMLAttributes } from "astro/types";
+import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
+
+interface Props extends HTMLAttributes<"span"> {
+  active?: boolean;
+  tone?: Tone;
+  /** Height in px. */
+  height?: number;
+}
+
+const { active = true, tone = "success", height = 12, class: className, style, ...rest } = Astro.props;
+---
+
+<span
+  class:list={["eq", className]}
+  data-active={String(active)}
+  style={mergeStyle(`--_color: ${toneVar(tone)}; --_height: ${height}px`, style)}
+  aria-hidden="true"
+  {...rest}
+>
+  <span></span><span></span><span></span><span></span>
+</span>
+
+<style>
+  .eq {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: 2px;
+    height: var(--_height);
+  }
+
+  .eq > span {
+    width: 2px;
+    height: 100%;
+    background: var(--idle);
+    transform-origin: bottom;
+    transform: scaleY(0.33);
+  }
+
+  .eq[data-active="true"] > span {
+    background: var(--_color);
+    animation: eq-bounce 1s ease-in-out infinite;
+  }
+
+  .eq[data-active="true"] > span:nth-child(1) { animation-delay: 100ms; }
+  .eq[data-active="true"] > span:nth-child(2) { animation-delay: 300ms; }
+  .eq[data-active="true"] > span:nth-child(3) { animation-delay: 200ms; }
+  .eq[data-active="true"] > span:nth-child(4) { animation-delay: 400ms; }
+
+  @keyframes eq-bounce {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+</style>
