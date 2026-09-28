@@ -20,8 +20,8 @@ export type CRTIntensityLevel = "low" | "medium" | "high" | "ultra";
 export interface CRTConfig {
   enabled: boolean;
   intensity: CRTIntensityLevel;
-  scanlineOpacity: number; // 0.0 (off) to 1.0 (heavy)
-  vignetteOpacity: number;  // 0.0 (off) to 1.0 (heavy)
+  scanlineOpacity: number;
+  vignetteOpacity: number;
 }
 
 export interface ThemeConfig {
@@ -39,20 +39,13 @@ export const CRT_PRESETS: Record<CRTIntensityLevel, { scanlineOpacity: number; v
   ultra: { scanlineOpacity: 0.65, vignetteOpacity: 0.98, label: "ULTRA (Heavy Phosphor Glare)" },
 };
 
-/**
- * 📺 GLOBAL CRT FILTER SETTING (Applies across ALL themes)
- * Users can easily adjust the default global CRT filter intensity & strength here!
- */
 export const GLOBAL_CRT_CONFIG: CRTConfig = {
   enabled: true,
-  intensity: "medium", // Options: "low" | "medium" | "high" | "ultra"
-  scanlineOpacity: 0.20, // Default balanced CRT scanlines (0.0 to 1.0)
-  vignetteOpacity: 0.65, // Default retro glass corner vignette shadow (0.0 to 1.0)
+  intensity: "medium",
+  scanlineOpacity: 0.20,
+  vignetteOpacity: 0.65,
 };
 
-/**
- * Built-in Retro CRT Themes
- */
 export const BUILTIN_THEMES: ThemeConfig[] = [
   {
     id: "fruity",
@@ -210,27 +203,16 @@ export const BUILTIN_THEMES: ThemeConfig[] = [
   },
 ];
 
-/**
- * 🌟 ADD YOUR CUSTOM THEMES HERE!
- * Users can easily define custom color themes by adding objects to this array.
- */
 export const CUSTOM_THEMES: ThemeConfig[] = [];
 
-/**
- * Combined list of all available themes (Built-in + Custom)
- */
 export const ALL_THEMES: ThemeConfig[] = [...BUILTIN_THEMES, ...CUSTOM_THEMES];
 
-/**
- * Helper utility to apply theme CSS variables to the document root element
- */
 export function applyTheme(themeId: string) {
   const theme = ALL_THEMES.find((t) => t.id === themeId) || BUILTIN_THEMES[0];
   const root = document.documentElement;
 
   root.setAttribute("data-theme", theme.id);
 
-  // Dynamically set CSS variables for custom themes
   const c = theme.colors;
   root.style.setProperty("--bg-main", c.bgMain);
   root.style.setProperty("--bg-card", c.bgCard);
@@ -248,9 +230,6 @@ export function applyTheme(themeId: string) {
   root.style.setProperty("--status-bar-bg", c.statusBarBg);
 }
 
-/**
- * Apply CRT filter settings, intensity presets, and opacity values dynamically
- */
 export function applyCRTConfig(config: Partial<CRTConfig> = {}) {
   const root = document.documentElement;
   const isMobile = window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);

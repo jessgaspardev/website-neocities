@@ -1,18 +1,9 @@
 ---
-/**
- * Small round status light.
- *
- * <StatusDot />                                green, static
- * <StatusDot animation="pulse" />              fading in/out ("LIVE REST API")
- * <StatusDot animation="ping" size={10} />     radar ping ring ("OPEN FOR WORK")
- * <StatusDot tone="danger" />
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"span"> {
   tone?: Tone;
-  /** Diameter in px. */
   size?: number;
   animation?: "none" | "pulse" | "ping";
 }

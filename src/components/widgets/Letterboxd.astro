@@ -1,12 +1,4 @@
 ---
-/**
- * Recently watched films from your Letterboxd diary, with rating, like and rewatch.
- * Fetched from your public Letterboxd RSS feed at build time, so it's plain
- * static HTML and only changes when the site is rebuilt.
- *
- *   <Letterboxd />
- *   <Letterboxd username="amandaseyfrieds" limit={5} />
- */
 import type { HTMLAttributes } from "astro/types";
 import Card from "../surfaces/Card.astro";
 import StatusDot from "../feedback/StatusDot.astro";
@@ -14,7 +6,6 @@ import { fetchLetterboxdFilms } from "../../lib/letterboxd";
 
 interface Props extends HTMLAttributes<"div"> {
   username?: string;
-  /** How many films to show. */
   limit?: number;
 }
 

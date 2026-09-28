@@ -1,18 +1,4 @@
 ---
-/**
- * Segmented tab control (the "CLI Mode / GUI Dashboard" switch).
- *
- * Control only:
- *   <Tabs tabs={[{ id: "cli", label: ">_ CLI" }, { id: "gui", label: "[#] GUI" }]} active="gui" />
- *
- * With panels:
- *   <Tabs tabs={[{ id: "about", label: "About" }, { id: "work", label: "Work" }]}>
- *     <div slot="about">…</div>
- *     <div slot="work">…</div>
- *   </Tabs>
- *
- * Fires `tab-change` (bubbles) with detail { id } on the tab bar.
- */
 import type { HTMLAttributes } from "astro/types";
 
 interface Tab {
@@ -158,8 +144,6 @@ const hasPanels = Object.keys(panels).length > 0;
     });
   }
 
-  // Runs on first load and after every client-side page change; the marker
-  // attribute stops tabs that survived the swap from being bound twice.
   document.addEventListener("astro:page-load", () => {
     document.querySelectorAll<HTMLElement>("[data-tabs]:not([data-tabs-ready])").forEach((root) => {
       root.dataset.tabsReady = "";

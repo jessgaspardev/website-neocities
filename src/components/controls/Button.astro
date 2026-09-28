@@ -7,11 +7,9 @@ type Variant = "default" | "primary" | "accent" | "ghost" | "dashed" | "danger";
 interface Props extends Omit<HTMLAttributes<"button">, "type"> {
   variant?: Variant;
   size?: "sm" | "md" | "lg";
-  /** Full width. */
   block?: boolean;
   align?: "center" | "start";
   glow?: boolean;
-  /** Overrides the text color. */
   tone?: Tone;
   type?: "button" | "submit" | "reset";
   href?: string;
@@ -104,7 +102,6 @@ const toneStyle = tone ? `--_tone: ${toneVar(tone)}` : undefined;
     transform: none;
   }
 
-  /* Sizes */
   .btn--sm {
     padding: 4px 8px;
     font-size: var(--text-xs);
@@ -130,7 +127,6 @@ const toneStyle = tone ? `--_tone: ${toneVar(tone)}` : undefined;
     text-align: left;
   }
 
-  /* Variants */
   .btn--primary {
     border-color: var(--border-active);
     background: var(--border);

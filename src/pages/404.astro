@@ -125,7 +125,6 @@ const bigAscii = `██╗  ██╗ ██████╗  ██╗  ██�
     white-space: pre-wrap;
   }
 
-  /* Lines are added from the script, so they don't carry the scoped attribute */
   .console__output :global(p) {
     margin: 0;
   }
@@ -156,7 +155,6 @@ const bigAscii = `██╗  ██╗ ██████╗  ██╗  ██�
 
   let output: HTMLElement | null = null;
 
-  /** Appends a console line. Text only (never innerHTML), so typed input can't inject markup. */
   function log(segments: Segment[], className = "") {
     if (!output) return;
     const line = document.createElement("p");
@@ -202,9 +200,8 @@ const bigAscii = `██╗  ██╗ ██████╗  ██╗  ██�
     const form = document.querySelector<HTMLFormElement>("[data-console-form]");
     const input = form?.querySelector("input");
     output = document.querySelector<HTMLElement>("[data-console-output]");
-    if (!form) return; // not on the 404 page
+    if (!form) return;
 
-    // Error sound on load, and show the path that was actually requested
     setTimeout(playErrorSound, 200);
     const route = document.querySelector("[data-requested-path]");
     if (route) route.textContent = window.location.pathname || "/unknown-route";
@@ -277,6 +274,5 @@ const bigAscii = `██╗  ██╗ ██████╗  ██╗  ██�
     });
   }
 
-  // Runs on first load and after every client-side page change.
   document.addEventListener("astro:page-load", init);
 </script>

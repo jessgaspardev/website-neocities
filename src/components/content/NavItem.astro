@@ -6,10 +6,8 @@ interface Props extends Omit<HTMLAttributes<"a">, "type"> {
   href?: string;
   num?: string;
   meta?: string;
-  /** Title color (default: bright). */
   tone?: Tone;
   active?: boolean;
-  /** Dashed outline — used for "launch" actions. */
   dashed?: boolean;
 }
 
@@ -59,7 +57,6 @@ const mergedStyle = color ? mergeStyle(color, style) : style;
     transition: background-color var(--transition), border-color var(--transition);
   }
 
-  /* Terminal prompt (same as the ul bullet), hidden until hover/active so rows don't shift */
   .navitem::before {
     content: ">";
     flex-shrink: 0;

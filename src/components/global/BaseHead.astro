@@ -2,7 +2,6 @@
 import { ClientRouter } from "astro:transitions";
 import ThemeScript from "../theme/ThemeScript.astro";
 import { PORTFOLIO_DATA } from "../../data/portfolio";
-const { developer } = PORTFOLIO_DATA;
 
 interface Props {
   title?: string;
@@ -10,7 +9,7 @@ interface Props {
 }
 
 const {
-  title = `Home`,
+  title = `home`,
   description = PORTFOLIO_DATA.developer.bio,
 } = Astro.props;
 ---
@@ -28,7 +27,6 @@ const {
     <ThemeScript />
     <ClientRouter />
     <script>
-      // carry over settings so the page doesn't flash
       const KEEP = ["data-theme", "data-crt", "data-crt-intensity", "data-crt-flicker", "style"];
 
       document.addEventListener("astro:before-swap", (event) => {

@@ -1,25 +1,11 @@
 ---
-/**
- * Main content with a sidebar on either or both sides (the "explorer"
- * dashboard: 3/12 + 6/12 + 3/12). Stacks vertically below 1024px in the
- * order main → left → right.
- *
- * <SplitLayout>
- *   <Card slot="left">…</Card>
- *   <Stack gap={8}>…main…</Stack>
- *   <Card slot="right">…</Card>
- * </SplitLayout>
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, spaceVar } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"div"> {
-  /** Left sidebar share of the 12-column grid (default 3). */
   leftSpan?: number;
-  /** Right sidebar share of the 12-column grid (default 3). */
   rightSpan?: number;
   gap?: number;
-  /** Keep the sidebars in view while scrolling (desktop only). */
   sticky?: boolean;
 }
 
@@ -53,9 +39,6 @@ const vars = `--_cols: ${columns}; --_gap: ${spaceVar(gap)}`;
     min-width: 0;
   }
 
-  /* The aside stretches to the row height (grid default); let the slotted
-     panel fill it so sidebars match the main column but never shrink below
-     their own content. */
   .split__sidebar {
     display: flex;
     flex-direction: column;

@@ -1,12 +1,4 @@
 ---
-/**
- * Recent Goodreads updates: what you're reading, added, or rated.
- * Fetched from your public Goodreads RSS feed at build time, so it's plain
- * static HTML and only changes when the site is rebuilt.
- *
- *   <Goodreads />
- *   <Goodreads userId="142704100" limit={5} />
- */
 import type { HTMLAttributes } from "astro/types";
 import Card from "../surfaces/Card.astro";
 import StatusDot from "../feedback/StatusDot.astro";
@@ -14,7 +6,6 @@ import { fetchGoodreadsUpdates } from "../../lib/goodreads";
 
 interface Props extends HTMLAttributes<"div"> {
   userId?: string;
-  /** How many updates to show. */
   limit?: number;
   profileUrl?: string;
 }

@@ -1,12 +1,7 @@
 ---
-/**
- * Quote with an accent left rule.
- * <Blockquote cite="Cory House">"Code is like humor…"</Blockquote>
- */
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"blockquote"> {
-  /** Author, shown under the quote. */
   cite?: string;
 }
 

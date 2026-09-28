@@ -3,7 +3,6 @@ import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"div"> {
   label: string;
-  /** id of the control inside, so clicking the label focuses it. */
   for?: string;
   hint?: string;
   error?: string;

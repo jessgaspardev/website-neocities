@@ -1,20 +1,9 @@
 ---
-/**
- *
- * <Card>…</Card>                                   panel (card background)
- * <Card variant="inset">…</Card>                   darker page background, for cards inside cards
- * <Card variant="inset" interactive>…</Card>       border lights up on hover
- * <Card href="https://…" interactive="accent">     whole card is a link
- * <Card label="SYSTEM INFO v2.4">…</Card>          little tab in the top-right corner
- *
- * Children are stacked vertically with `gap` (spacing step, default 3).
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, spaceVar } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"div"> {
   variant?: "panel" | "inset" | "ghost";
-  /** true = active border color on hover, "accent" = accent color on hover. */
   interactive?: boolean | "accent";
   dashed?: boolean;
   padding?: "none" | "sm" | "md" | "lg";

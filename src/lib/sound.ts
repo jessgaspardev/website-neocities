@@ -1,6 +1,3 @@
-// Web Audio synthesizer for retro UI sound effects.
-// Every sound respects the global SFX switch (see <SfxToggle>).
-
 import { readStorage, writeStorage } from "./global";
 
 const STORAGE_KEY = "sfx";
@@ -33,7 +30,6 @@ export function isSfxEnabled(): boolean {
   return sfxEnabled;
 }
 
-/** Turns SFX on/off (or flips it). Fires a `sfx-change` event on window. */
 export function toggleSfx(force?: boolean): boolean {
   loadFromStorage();
   sfxEnabled = force !== undefined ? force : !sfxEnabled;
@@ -116,12 +112,10 @@ function playSequence(freqs: number[], step: number, length: number, type: Oscil
   } catch {}
 }
 
-/** Rising three-note chime (C–E–G). */
 export function playSuccessSound(): void {
   playSequence([523.25, 659.25, 783.99], 0.04, 0.1, "sine", 0.03);
 }
 
-/** Two falling sawtooth buzzes. */
 export function playErrorSound(): void {
   playSequence([220, 180], 0.07, 0.06, "sawtooth", 0.04);
 }

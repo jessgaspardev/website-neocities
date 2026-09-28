@@ -1,16 +1,4 @@
 ---
-/**
- * Pop-up window over a dark backdrop.
- *
- * <Modal id="about-modal" title="ABOUT.EXE [v1.0]" shortTitle="ABOUT" icon="💾">
- *   …content…
- *   <Fragment slot="footer">Press <Kbd>ESC</Kbd> to close</Fragment>
- * </Modal>
- *
- * Opens from any element:   <Button data-modal-open="about-modal">Open</Button>
- * Closes from inside:          <button data-modal-close>Close</button>
- * Or from JS:                 window.retroUI.modal.open("about-modal") / .close(id) / .toggle(id)
- */
 import type { HTMLAttributes } from "astro/types";
 import WindowDots from "./WindowDots.astro";
 import Button from "../controls/Button.astro";
@@ -18,11 +6,9 @@ import Button from "../controls/Button.astro";
 interface Props extends HTMLAttributes<"div"> {
   id: string;
   title: string;
-  /** Shorter title for phones. */
   shortTitle?: string;
   icon?: string;
   size?: "sm" | "md" | "lg";
-  /** Start open. */
   open?: boolean;
 }
 

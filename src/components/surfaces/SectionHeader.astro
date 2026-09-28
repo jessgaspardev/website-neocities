@@ -1,17 +1,9 @@
 ---
-/**
- * Terminal heading row with an underline:  "> CAT BIO.TXT // ABOUT ME     [READ-ONLY]"
- *
- * <SectionHeader title="CAT BIO.TXT" subtitle="ABOUT ME" meta="[READ-ONLY]" />
- * <SectionHeader size="sm" icon="📁" title="EXPLORER" meta="CONTENTS" />   (small, accent — for sub-cards)
- * <SectionHeader title="GITHUB.SH"><span slot="meta">…live dot…</span></SectionHeader>
- */
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"div"> {
   title: string;
   subtitle?: string;
-  /** Leading prompt symbol; set to "" to hide. */
   prompt?: string;
   icon?: string;
   meta?: string;
@@ -79,7 +71,6 @@ const hasMetaSlot = Astro.slots.has("meta");
     color: var(--fg-dim);
   }
 
-  /* md: section headings */
   .sh--md {
     padding-bottom: var(--space-3);
   }
@@ -108,7 +99,6 @@ const hasMetaSlot = Astro.slots.has("meta");
     }
   }
 
-  /* sm: sub-card headings */
   .sh--sm {
     padding-bottom: var(--space-2);
   }

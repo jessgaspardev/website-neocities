@@ -15,22 +15,14 @@ export interface SpotifyTrack {
 
 export interface SpotifyConfig {
   enabled: boolean;
-  lanyardUserId?: string; // Optional Discord User ID for Lanyard API live Spotify tracking
+  lanyardUserId?: string;
 }
 
-/**
- * 🎵 SPOTIFY ACTIVITY CONFIGURATION
- * Provide your Discord User ID below to automatically stream live Spotify activity via Lanyard API!
- */
 export const SPOTIFY_CONFIG: SpotifyConfig = {
   enabled: false,
-  // Provide your Discord User ID here (e.g. lanyardUserId: "123456789012345678")
   lanyardUserId: "your_discord_id",
 };
 
-/**
- * Helper to fetch live Spotify activity from Lanyard API
- */
 export async function getSpotifyActivity(): Promise<SpotifyTrack | null> {
   if (SPOTIFY_CONFIG.lanyardUserId) {
     try {
@@ -54,7 +46,6 @@ export async function getSpotifyActivity(): Promise<SpotifyTrack | null> {
             timestamps: { start, end },
           };
         } else {
-          // Spotify is paused / stopped / inactive
           return {
             isPlaying: false,
             title: "No Active Track",
@@ -65,9 +56,7 @@ export async function getSpotifyActivity(): Promise<SpotifyTrack | null> {
           };
         }
       }
-    } catch {
-      // Network error fallback
-    }
+    } catch {}
   }
 
   return null;

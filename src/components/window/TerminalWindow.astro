@@ -1,33 +1,14 @@
 ---
-/**
- * The big terminal window frame: title bar, body and optional status bar.
- *
- * <TerminalWindow user="jess@home:" path="~/portfolio" branch="main*">
- *   <Fragment slot="header-actions">
- *     <ThemeSelect /> <CRTToggle /> <SfxToggle /> <RadioButton />
- *   </Fragment>
- *
- *   …page content…
- *
- *   <StatusBar slot="footer">…</StatusBar>
- * </TerminalWindow>
- *
- * Slots: default (body), header-center (e.g. <Tabs>), header-actions, footer, title (custom title markup)
- */
 import type { HTMLAttributes } from "astro/types";
 import WindowDots from "./WindowDots.astro";
 import { mergeStyle } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"div"> {
   user?: string;
-  /** Accent path part of the title. */
   path?: string;
-  /** Small chip after the path. */
   branch?: string;
   maxWidth?: string;
-  /** Minimum body height, e.g. "650px". */
   minHeight?: string;
-  /** Body padding: md (16/24px) or none. */
   padding?: "md" | "none";
 }
 

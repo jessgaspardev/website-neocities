@@ -3,8 +3,8 @@ export type CRTIntensityLevel = "low" | "medium" | "high" | "ultra";
 export interface CRTConfig {
   enabled: boolean;
   intensity: CRTIntensityLevel;
-  scanlineOpacity: number; // 0.0 to 1.0
-  vignetteOpacity: number;  // 0.0 to 1.0
+  scanlineOpacity: number;
+  vignetteOpacity: number;
 }
 
 export const CRT_PRESETS: Record<CRTIntensityLevel, { scanlineOpacity: number; vignetteOpacity: number; label: string }> = {
@@ -21,9 +21,6 @@ export const DEFAULT_CRT_CONFIG: CRTConfig = {
   vignetteOpacity: 0.65,
 };
 
-/**
- * Apply CRT filter settings, intensity presets, and opacity values dynamically
- */
 export function applyCRTConfig(config: Partial<CRTConfig>) {
   const root = document.documentElement;
   const isMobile = window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);

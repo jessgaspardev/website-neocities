@@ -1,21 +1,8 @@
 ---
-/**
- * Bottom status bar with left / center / right areas.
- *
- * <StatusBar>
- *   <span>UTF-8</span>
- *   <RadioTicker slot="center" />
- *   <Fragment slot="right"><Clock /> <span class="text-accent">v1.0</span></Fragment>
- * </StatusBar>
- *
- * Add the class "hide-mobile" to any item to hide it below 768px.
- */
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"footer"> {
-  /** Hide the center area on phones (default true). */
   hideCenterOnMobile?: boolean;
-  /** Show the green "STATUS 200 OK" indicator on the left. */
   status?: string | false;
 }
 

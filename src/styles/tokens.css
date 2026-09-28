@@ -1,5 +1,4 @@
 :root {
-  /* ---- Theme colors (Phosphor Green) ---- */
   --bg: #0a120b;
   --bg-card: #0d1a0e;
   --bg-card-hover: #122414;
@@ -15,7 +14,6 @@
   --selection-fg: #00ff66;
   --statusbar-bg: #040905;
 
-  /* ---- Status colors (theme independent) ---- */
   --success: #34d399;
   --success-strong: #10b981;
   --warning: #facc15;
@@ -28,7 +26,6 @@
   --pink: #f472b6;
   --idle: #6b7280;
 
-  /* Window "traffic light" dots */
   --dot-close: #ef4444;
   --dot-close-border: #b91c1c;
   --dot-min: #eab308;
@@ -36,7 +33,6 @@
   --dot-max: #10b981;
   --dot-max-border: #047857;
 
-  /* ---- Typography ---- */
   --font: 'Iosevka', monospace;
   --text-nano: 8px;
   --text-micro: 9px;
@@ -52,7 +48,6 @@
   --tracking-wide: 0.05em;
   --tracking-widest: 0.1em;
 
-  /* ---- Spacing ---- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -61,12 +56,10 @@
   --space-6: 24px;
   --space-8: 32px;
 
-  /* ---- Misc ---- */
   --radius: 0;
   --transition: 150ms ease;
   --shadow-window: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
-  /* CRT effect strength (set by <CRT>, 0 = off) */
   --scanline-opacity: 0.22;
   --vignette-opacity: 0.65;
 }

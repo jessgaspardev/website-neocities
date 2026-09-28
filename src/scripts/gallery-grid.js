@@ -6,40 +6,32 @@
 *   https://espy.world/gallery-grid
 */
 
-/* User variables */
-var stylePath = "/styles/gallery-grid.css"; // The path to the gallery grid stylesheet
-var smallScreenWidth = 600; // The width the widget considers to be a small screen (mobile)
-var disableShortcuts = false; // Whether or not keyboard shortcuts are enabled
+var stylePath = "/styles/gallery-grid.css";
+var smallScreenWidth = 600;
+var disableShortcuts = false;
 
-/* Default values */
 const Defaults = {
-    GRID_TYPE: "fixed", // Accepted values: fixed, justified
-    
-    CELL_WIDTH: 250, // Grid cell width (for fixed grids)
-    CELL_HEIGHT: 250, // Grid cell height (for fixed grids)
+    GRID_TYPE: "fixed",
 
-    MAX_ROW_HEIGHT: 500, // Max row height for justified grid
+    CELL_WIDTH: 250,
+    CELL_HEIGHT: 250,
 
-    MAX_PER_PAGE: undefined, // Max images per page, no pagination if undefined
-    PAGENAV_DISPLAY: "bottom", // Where page nav is in relation to grid
+    MAX_ROW_HEIGHT: 500,
 
-    CAPTIONS: "disabled", // Embed description - Accepted values: always, disabled, smallscreen
+    MAX_PER_PAGE: undefined,
+    PAGENAV_DISPLAY: "bottom",
 
-    FILTERS: "none", // Filter type for the grid - Accepted values: tags, none
-    SORT: "none", // Sort type for the gallery - Accepted values: default, none
+    CAPTIONS: "disabled",
+
+    FILTERS: "none",
+    SORT: "none",
 }
 
-/*
-* Keyboard shortcuts
-* For a list of key names, see here: https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
-*/
 const Keybinds = {
     NAV_LEFT: 'ArrowLeft',
     NAV_RIGHT: 'ArrowRight',
     RANDOM: 'r'
 }
-
-/* --- DO NOT edit below this point unless you know what you're doing! --- */
 
 const VALID_GRIDTYPES = ["fixed", "justified"];
 const VALID_CAPTIONS = ["always", "disabled", "smallscreen"];
@@ -53,7 +45,6 @@ const styleLoadEvent = new Event(STYLE_LOAD_EVENT_NAME);
 main();
 
 class Lightbox {
-    // Elements
     static lightboxEl = document.getElementById("lb");
     static titleEl = document.getElementById("lb_title");
     static descEl = document.getElementById("lb_desc");
@@ -64,11 +55,9 @@ class Lightbox {
     static imgEl = document.getElementById("lb_image");
     static loadingEl = document.getElementById("lb_loading");
 
-    // Buttons
     static exitButton = document.getElementById("lb_exitButton");
     static smallExitButton = document.getElementById("lb_smallExitButton");
 
-    // Content
     static title;
     static desc;
     static tags;
@@ -77,16 +66,13 @@ class Lightbox {
     static imgWidth;
     static imgScale = 1;
 
-    // Events
     static lightboxOpenEvent = new Event("lightboxopen");
     static lightboxCloseEvent = new Event("lightboxclose");
 
-    // Variables
     static disabled = false;
     static smallScreenEnabled = true;
     static opened = false;
 
-    /** Fixed initialization. */
     static {
         this.exitButton.onclick = function () {Lightbox.close()};
         this.smallExitButton.onclick = function () {Lightbox.close()};
@@ -98,13 +84,11 @@ class Lightbox {
         })
     }
 
-    /** Sets lightbox to given data and opens lightbox. */
     static openWith(data) {
         this.set(data);
         this.open();
     }
 
-    /** Sets lightbox to current data. */
     static set({title, desc, alt, tags, img, render, noframe, imgWidth, imgHeight, imgScale = 1, hidenav = false}) {
         if (this.disabled) return;
         if (this.isSmallScreen() && !this.smallScreenEnabled) return;
@@ -130,7 +114,7 @@ class Lightbox {
         }
 
 
-        this.imgEl.src = ""; // Unload previous image
+        this.imgEl.src = "";
 
         if (alt) {
             this.imgEl.style.opacity = 1;
@@ -150,7 +134,6 @@ class Lightbox {
         else this.lightboxEl.classList.remove("lb-hidenav");
     }
 
-    /** Opens the lightbox. */
     static open() {
         if (this.disabled) return;
         if (this.isSmallScreen() && !this.smallScreenEnabled) return;
@@ -191,7 +174,6 @@ class Lightbox {
         }
     }
 
-    /** Closes the lightbox. */
     static close() {
         dispatchEvent(this.lightboxCloseEvent);
         this.lightboxEl.style.display = "none";
@@ -199,44 +181,36 @@ class Lightbox {
         this.opened = false;
     }
 
-    /** Retrieves image source. */
     static getImgSource(imgSrc) {
         return imgSrc;
     }
     
-    /** Returns whether or not the window is a small screen. */
     static isSmallScreen() {
         return (window.innerWidth <= smallScreenWidth);
     }
 
-    /** Sets an event to run whenever the lightbox is opened. */
     static setOnLightboxOpenEvent(lambda) {
         addEventListener("lightboxopen", () => lambda());
     }
 
-    /** Sets an event to run whenever the lightbox is closed. */
     static setOnLightboxCloseEvent(lambda) {
         addEventListener("lightboxclose", () => lambda());
     }
 
-    /** Disables opening the lightbox and closes the lightbox if it is already opened. */
     static disable() {
         this.close();
         this.disabled = true;
     }
 
-    /** Enables opening the lightbox. */
     static enable() {
         this.disabled = false;
     }
 
-    /** Sets whether or not you can open the lightbox on a small screen. */
     static setSmallScreenEnabled(smallScreenEnabled) {
         this.smallScreenEnabled = smallScreenEnabled;
     }
 }
 
-/* Defines data for single image in the gallery. */
 class GallerySource {
     constructor({id, img, alt, thumb, imgWidth, imgHeight, title, desc, tags, render, thumbRender, scale, noframe, order, element}) {
         this.id = id;
@@ -276,28 +250,23 @@ class GallerySource {
     }
 }
 
-/* Handles gallery functionality. */
 class Gallery {
     SWIPE_SPEED = 100;
     SWIPE_BUMP_SPEED = 200;
 
-    /* Defines functions that generate elements for use in fixed grid cells. */
     static fixedCellElementGen = {
         loading: ({}) => {
-            // Loading
             let loading = document.createElement("div");
             loading.className = "g-gridCellLoading";
             return loading;
         },
         effect: ({self}) => {
-            // Effect
             let effect = document.createElement("div");
             effect.className = "g-gridCellEffect";
             if (!self.smallLightboxEnabled) effect.classList.add("g-smallScreenHide");
             return effect;
         },
         btn: ({self, index}) => {
-            // Button to open lightbox
             let btn = document.createElement("button");
             btn.className = "g-gridCellButton";
             if (!self.smallLightboxEnabled)  btn.classList.add("g-smallScreenHide");
@@ -307,7 +276,6 @@ class Gallery {
             return btn;
         },
         img: ({source}) => {
-            // Image
             let img = source.element ?? document.createElement("img");
             img.style.display = '';
             img.src = Gallery.getCellImage(source);
@@ -317,7 +285,6 @@ class Gallery {
             return img;
         },
         desc: ({self, source}) => {
-            // Description (if applicable)
             if (self.captions !== "disabled" && source.desc != undefined) {
                 let descEl = document.createElement("span");
                 descEl.className = "g-gridCellCaption";
@@ -328,17 +295,14 @@ class Gallery {
         }
     }
 
-    /* Defines functions that generate elements for use in justified grid cells. */
     static justifiedCellElementGen = {
         effect: ({self}) => {
-            // Effect
             let effect = document.createElement("div");
             effect.className = "g-gridCellEffect rm-pause";
             if (!self.smallLightboxEnabled) effect.classList.add("g-smallScreenHide");
             return effect;
         },
         img: ({source}) => {
-            // Image
             let img = source.element ?? document.createElement("img");
             img.style.display = '';
             img.src = Gallery.getCellImage(source);
@@ -349,7 +313,6 @@ class Gallery {
             return img;
         },
         btn: ({self, index}) => {
-            // Button to open lightbox
             let btn = document.createElement("button");
             btn.className = "g-gridCellButton";
             if (!self.smallLightboxEnabled) btn.classList.add("g-smallScreenHide");
@@ -359,7 +322,6 @@ class Gallery {
             return btn;
         },
         desc: ({self, source}) => {
-            // Description (if applicable)
             if (self.captions !== "disabled" && source.desc != undefined) {
                 let descEl = document.createElement("span");
                 descEl.className = "g-gridCellCaption";
@@ -379,51 +341,41 @@ class Gallery {
 
         var self = this;
 
-        // Sources
         this.sources = Gallery.sortSources(sources);
 
-        // Indexing
         this.curr = -1;
 
-        // Buttons
         this.prevButton = document.getElementById("lb_prev");
         this.nextButton = document.getElementById("lb_next");
         this.randButton = document.getElementById("lb_randomButton");
         this.allowOpenFromRandom = allowOpenFromRandom;
 
-        // Grid
         this.gridEl;
         this.maxRowHeight;
         this.smallMaxRowHeight;
         this.refreshGrid = () => {};
 
-        // Variables
         this.focused = false;
-        this.smallLightboxEnabled = smallLightboxEnabled; // Whether or not the lightbox is enabled for small screens
-        this.captions = captions; // Whether or not description is embed on cells
-        this.hiddenElements = hiddenElements; // Elements to hide from lightbox
-    
-        // Setup
+        this.smallLightboxEnabled = smallLightboxEnabled;
+        this.captions = captions;
+        this.hiddenElements = hiddenElements;
+
         this.setupButtons();
         this.setupShortcuts();
         this.setupListeners();
 
-        // Set extra variables
         for (const [key, value] of Object.entries(extra)) {
             this[key] = value;
         }
         Gallery.onStart(self, extra);
     }
 
-    /* Runs on initialization. Override this to create custom functionality. */
     static onStart(_handler, {}) {}
 
-    /* Runs on sources being changed. Override this to create custom functionality. */
     static onSourcesChanged(handler, _sources) {
         handler.refreshGrid();
     }
 
-    /** Sets lightbox to current index. */
     setLightbox(i) {
         const source = this.sources[i];
 
@@ -451,7 +403,6 @@ class Gallery {
         }
     }
 
-    /** Sets lightbox by id. */
     setLightboxById(id) {
         const index = this.getIndex(id);
         if (index === -1) {
@@ -461,55 +412,45 @@ class Gallery {
         this.setLightbox(index);
     }
 
-    /** Gets index of source by id. */
     getIndex(id) {
         return this.sources.findIndex((vs) => vs.id == id);
     }
 
-    /** Sets lightbox to previous. */
     prevLightbox() {
         if (!this.isFirstLightbox()) {
             this.setLightbox(this.curr - 1);
         }
     }
 
-    /** Sets lightbox to next. */
     nextLightbox() {
         if (!this.isLastLightbox()) {
             this.setLightbox(this.curr + 1);
         }
     }
 
-    /** Returns whether or not we are currently on the first lightbox. */
     isFirstLightbox() {
         return this.curr <= 0;
     }
 
-    /** Returns whether or not we are currently on the last lightbox. */
     isLastLightbox() {
         return this.curr >= this.sources.length - 1
     }
 
-    /** Sets random lightbox. */
     randomLightbox() {
         this.setLightbox(Math.floor(Math.random() * this.sources.length));
     }
 
-    /** Sets up lightbox buttons. */
     setupButtons() {
         var self = this;
 
-        // Prev
         this.prevButton.addEventListener("click", function () {
             if (self.focused) self.prevLightbox();
         });
 
-        // Next
         this.nextButton.addEventListener("click", function () {
             if (self.focused) self.nextLightbox();
         }); 
 
-        // Random
         if (this.randButton) {
             this.randButton.addEventListener("click", function() {
                 if (self.focused || self.allowOpenFromRandom) self.randomLightbox();
@@ -517,7 +458,6 @@ class Gallery {
         }
     }
 
-    /** Setup event listeners. */
     setupListeners() {
         var self = this;
 
@@ -542,7 +482,6 @@ class Gallery {
             self.refreshGrid()
         });
 
-        // Swipe controls for mobile
         let init = {x: 0, y: 0};
         let delta = {x: 0, y: 0};
         let threshold = 100;
@@ -616,7 +555,6 @@ class Gallery {
         });
     }
 
-    /** Sets up keyboard shortcuts. */
     setupShortcuts() {
         if (disableShortcuts) return;
         var self = this;
@@ -640,20 +578,11 @@ class Gallery {
         });
     }
 
-    /** Returns the image to use for the grid cell. */
     static getCellImage(source) {
         if (source.thumb) return source.thumb;
         return source.img;
     }
 
-    /** 
-     * Initializes a fixed grid using the view sources. 
-     * @param parent element to add grid to
-     * @param width target fixed width for cell
-     * @param height target fixed height for cell
-     * @param smallFillWidth whether or not cells fill the width of a small screen
-     * @param loading what loading style to use
-     */
     initializeFixedGrid(parent, {width, height, smallFillWidth, loading}) {
         var self = this;
         this.gridEl = document.createElement("div");
@@ -665,13 +594,6 @@ class Gallery {
         }
     }
 
-    /** 
-     * Generates fixed grid. 
-     * @param width target fixed width for cell
-     * @param height target fixed height for cell
-     * @param smallFillWidth whether or not cells fill the width of a small screen
-     * @param loading what loading style to use
-     */
     generateFixedGrid(width, height, {smallFillWidth, loading}) {
         var self = this;
 
@@ -716,14 +638,6 @@ class Gallery {
         this.gridEl.style.minHeight = "";
     }
 
-    /** 
-     * Initializes with justified grid with variable width and height. \
-     * @param parent element to add grid to
-     * @param maxRowHeight max height for row
-     * @param smallMaxRowHeight max height for row for small screens
-     * @param smallFillWidth whether or not cells fill the width of a small screen
-     * @param loading what loading style to use
-     */
     initializeJustifiedGrid(parent, {maxRowHeight, smallMaxRowHeight, smallFillWidth, loading}) {
         var self = this;
         this.gridEl = document.createElement("div");
@@ -741,12 +655,6 @@ class Gallery {
         }
     }
 
-    /** 
-     * Generates with justified grid. 
-     * @param maxRowHeight max height for row
-     * @param smallFillWidth whether or not cells fill the width of a small screen
-     * @param loading what loading style to use
-     */
     generateJustifiedGrid(maxRowHeight, {smallFillWidth, loading}) {
         var self = this;
         var gridWidth = self.gridEl.clientWidth;
@@ -755,10 +663,6 @@ class Gallery {
             maxRowHeight = self.smallMaxRowHeight ?? smallScreenWidth;
         }
 
-        /**
-         * Adds item (cell) to row.
-         * Returns image, with its extra width and height.
-         */
         function addItem(source, index, row) {
             let cell = document.createElement("div");
             cell.className = "g-gridCell";
@@ -791,14 +695,12 @@ class Gallery {
             cell.style.aspectRatio = `${source.imgWidth}/${source.imgHeight}`;
             row.appendChild(cell);
 
-            // Normalized to 100px height --- dh/h * w = dw
             const normalizedHeight = 100;
             const normalizedWidth = (100/(source.imgHeight)) * source.imgWidth;
 
             return {extraWidth, extraHeight, normalizedHeight, normalizedWidth};
         }
   
-        /** Adds row to grid */
         function addRow(rowHeight) {
             const newRow = currRow;
 
@@ -818,7 +720,6 @@ class Gallery {
             return newRow;
         }
   
-        // Clears grid
         self.gridEl.style.minHeight = `${self.gridEl.offsetHeight}px`;
         self.gridEl.textContent = "";
 
@@ -830,7 +731,6 @@ class Gallery {
 
         var rows = [];
 
-        // Iterates through all sources
         let currGridHeight = 0;
 
         for (let i = 0; i < self.sources.length; i++) {
@@ -839,7 +739,6 @@ class Gallery {
                 const itemResult = addItem(source, i, currRow);
                 imageData.push({src: source, ...itemResult});
 
-                // Calculate new row height --- dw/w * h = dh
                 const desiredWidth = gridWidth - imageData.reduce((sum, data) => sum + data.extraWidth, 0);
                 rowHeight = desiredWidth/imageData.reduce((sum, data) => sum + data.normalizedWidth, 0) * itemResult.normalizedHeight;
                 rowHeight += itemResult.extraHeight;
@@ -870,31 +769,25 @@ class Gallery {
         self.gridEl.style.minHeight = ``;
     }
 
-    /* Returns outer sizing of an element (borders, padding, and margin). */
     static getOuterSize(element) {
         let outerWidth = 0;
         let outerHeight = 0;
 
-        // Temporarily add to body to get computed style
         document.getElementsByTagName("body")[0].appendChild(element);
 
-        // Borders
         outerWidth += element.offsetWidth - element.clientWidth;
         outerHeight += element.offsetHeight - element.clientHeight;
 
-        // Margins
         const computedStyle = window.getComputedStyle(element);
         outerWidth += parseFloat(computedStyle.marginLeft) + parseFloat(computedStyle.marginRight);
         outerHeight += parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom);
 
-        // Padding
         outerWidth += parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
         outerHeight += parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
 
         return {outerWidth, outerHeight}
     }
 
-    /* Organizes sources. */
     static sortSources(sources) {
         sources.forEach((source, i) => {
             if (source.order === undefined) source.order = i;
@@ -907,16 +800,13 @@ class Gallery {
         return sources;
     }
 
-    /** Returns the size of the source array. */
     getSourceSize() {
         return this.sources.length;
     }
 
-    /** Updates the lightbox sources and refreshes. */
     updateSources(sources = this.sources, force = false) {
         let sortedSources = Gallery.sortSources(sources);
 
-        // Check if sources are the same
         if (sortedSources.length === this.sources.length && !force) {
             let sameSources = true;
             for (let i = 0; i < sortedSources.length; i++) {
@@ -933,7 +823,6 @@ class Gallery {
     }
 }
 
-/* Gallery component */
 class GalleryGrid extends HTMLElement {
     static observedAttributes = [
         "id", 
@@ -978,7 +867,6 @@ class GalleryGrid extends HTMLElement {
     }
 
     connectedCallback() {
-        // Set id (and generate one if none)
         if (!this.id) {
             this.id = GalleryGrid.idCounter.toString();
             while (GalleryGrid.ids.includes(this.id)) {
@@ -994,7 +882,6 @@ class GalleryGrid extends HTMLElement {
         }
         GalleryGrid.ids.push(this.id);
 
-        // Get grid type (or guess it)
         if (!this.getAttribute("gridtype")) {
             this.gridType = Defaults.GRID_TYPE;
             if (this.getAttribute("cellwidth" || this.getAttribute("cellheight"))) this.gridType = "fixed";
@@ -1006,7 +893,6 @@ class GalleryGrid extends HTMLElement {
         this.addAll(this.children)
     }
 
-    /* Validates number input. */
     validateNumber(valueName, defaultValue) {
         const numStr = this.getAttribute(valueName);
         if (!numStr) return defaultValue;
@@ -1022,7 +908,6 @@ class GalleryGrid extends HTMLElement {
         return num;
     }
 
-    /* Validates selection input. */
     validateSelection(valueName, acceptedValues, defaultValue) {
         const value = this.getAttribute(valueName);
         if (!value) return defaultValue;
@@ -1035,48 +920,39 @@ class GalleryGrid extends HTMLElement {
         return value;
     }
 
-    /* Validates boolean input. */
     validateBoolean(valueName) {
         const value = this.getAttribute(valueName)
         return value === null ? false : value !== "false";
     }
 
-    /* Initializes gallery grid. Runs once per grid. */
     initializeGrid() {
         this.innerHTML = "";
 
-        // Generate grid
         this.maxPerPage = this.validateNumber("maxperpage", Defaults.MAX_PER_PAGE);
         var width = this.validateNumber("cellwidth", Defaults.CELL_WIDTH);
         var height = this.validateNumber("cellheight", Defaults.CELL_HEIGHT);
         var maxRowHeight = this.validateNumber("maxrowheight", Defaults.MAX_ROW_HEIGHT);
 
-        // Small screen attributes
         var smallFillWidth = this.validateBoolean("small-fillwidth");
         var smallMaxRowHeight = this.validateNumber("small-maxrowheight", maxRowHeight);
         var smallLbDisabled = this.validateBoolean("small-lbdisabled");
 
-        // Sifter attributes
         this.filters = this.validateSelection("filters", VALID_FILTERS, Defaults.FILTERS);
         this.sort = this.validateSelection("sort", VALID_SORTS, Defaults.SORT)
         if (this.getAttribute("ascending") === null && this.sort == "alphabetical") {
             this.ascending = true;
         } else this.ascending = this.validateBoolean("ascending");
 
-        // Page nav attributes
         this.pageNavDisplay = this.validateSelection("pagenav-display", VALID_PAGENAV_DISPLAY, Defaults.PAGENAV_DISPLAY)
 
-        // Other attributes
         var captions = this.validateSelection("captions", VALID_CAPTIONS, Defaults.CAPTIONS);
         var hiddenElements = this.getAttribute("hide")?.split(",");
         var loading = this.getAttribute("loading");
 
-        // Create sorts and filters options (if applicable)
         const sifterDiv = document.createElement("div");
         sifterDiv.className = "g-sifterWrapper";
         if (this.filters === "none" && this.sort === "none") sifterDiv.style.display = "none";
         
-        // Filters
         if (this.filters !== "none") {
             const filterList = [];
 
@@ -1131,7 +1007,6 @@ class GalleryGrid extends HTMLElement {
             sifterDiv.appendChild(filterWrapper);
         }
 
-        // Sorts
         if (this.sort !== "none") {
             this.sorting = this.ascending ? "ascending" : "descending";
 
@@ -1176,7 +1051,6 @@ class GalleryGrid extends HTMLElement {
 
         this.appendChild(sifterDiv);
 
-        // Create grid
         this.gallery = new Gallery(this.sources, {smallLightboxEnabled: !smallLbDisabled, captions, hiddenElements});
 
         if (this.gridType == "fixed") {
@@ -1190,7 +1064,6 @@ class GalleryGrid extends HTMLElement {
             this.gallery.initializeJustifiedGrid(this, {smallMaxRowHeight, maxRowHeight, smallFillWidth, loading})
         }
 
-        // Create page nav (if applicable)
         if (this.maxPerPage) {
             this.pageCount = Math.max(Math.floor(this.sources.length / this.maxPerPage) + ((this.sources.length % this.maxPerPage) !== 0 ? 1 : 0), 1)
 
@@ -1246,19 +1119,16 @@ class GalleryGrid extends HTMLElement {
         this.refreshGalleryGrid();
     }
 
-    /** Refreshes gallery grid. */
     refreshGalleryGrid() {
         if (!this.gridInitialized) return;
         this.gallery.refreshGrid();
         this.applySourceChanges();
     }
 
-    /** Updates sources. Used for applying filters, sorts, and pagination. */
     applySourceChanges() {
         if (!this.gridInitialized) return;
         let changedSources = [...this.sources];
 
-        // Apply filters
         if (this.filters !== "none" && this.includeFilters) {
             changedSources = this.sources.filter((source) => {
                 let include = false;
@@ -1272,7 +1142,6 @@ class GalleryGrid extends HTMLElement {
             })
         }
 
-        // Apply sorts
         if (this.sort == "none" && this.ascending ) {
             changedSources = changedSources.toReversed();
             changedSources.forEach((source, i) => {
@@ -1311,7 +1180,6 @@ class GalleryGrid extends HTMLElement {
             });
         }
 
-        // Apply pagination
         if (this.maxPerPage) {
             this.pageCount = Math.max(Math.floor(changedSources.length / this.maxPerPage) + ((changedSources.length % this.maxPerPage) !== 0 ? 1 : 0), 1)
             this.page = Math.min(this.page, this.pageCount);
@@ -1328,7 +1196,6 @@ class GalleryGrid extends HTMLElement {
         }
     }
 
-    /* Adds multiple gallery grid sources from an array of image elements. */
     addAll(imgEls) {
         var promises = [];
         let order = 0;
@@ -1372,12 +1239,6 @@ class GalleryGrid extends HTMLElement {
         }
     }
 
-    /** 
-     * Adds a single gallery grid source from an image element.
-     * @param imgEl the image element to derive from
-     * @param order (OPTIONAL) the order the image should display in the grid
-     * @param refresh (OPTIONAL) whether or not the grid should refresh after adding the image
-     */
     add(imgEl, order = 0, refresh = true) {
         if (!imgEl.getAttribute("src")) {
             console.error("Image is missing src URL.")
@@ -1426,7 +1287,6 @@ class GalleryGrid extends HTMLElement {
         }
     }
 
-    /* Clears all gallery grid sources. */
     clear() {
         if (!this.gridInitialized) {
             console.warn("Cannot clear grid before initialization");
@@ -1439,7 +1299,6 @@ class GalleryGrid extends HTMLElement {
 customElements.define('gallery-grid', GalleryGrid);
 
 function main() {
-    // Apply CSS
     if (!document.querySelector(`link[href='${stylePath}']`)) {
         Object.values(document.querySelectorAll('gallery-grid')).forEach((value) => {
             value.style.display = "none";
@@ -1459,7 +1318,6 @@ function main() {
         }
     }
 
-    // Add lightbox element
     const lbCore = document.createElement("div");
     lbCore.id = "lb";
     lbCore.style.display = "none";
@@ -1483,10 +1341,6 @@ function main() {
         </div>`
     document.getElementsByTagName('body')[0].appendChild(lbCore);
 
-    // Astro's client router swaps <head> and <body> on page changes, which would
-    // drop the injected stylesheet and lightbox. Grids build themselves the moment
-    // they're inserted (mid-swap) and need the lightbox by then, so carry both
-    // into the incoming page *before* the swap.
     document.addEventListener("astro:before-swap", (event) => {
         const newDoc = event.newDocument;
         if (!newDoc.head.querySelector(`link[href='${stylePath}']`)) {

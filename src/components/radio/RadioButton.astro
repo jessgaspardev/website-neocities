@@ -1,16 +1,10 @@
 ---
-/**
- * Button that opens the <RadioPlayer>.
- * <RadioButton />
- * <RadioButton label="Music" variant="default" />
- */
 import type { HTMLAttributes } from "astro/types";
 import Button from "../controls/Button.astro";
 
 interface Props extends HTMLAttributes<"button"> {
   label?: string;
   icon?: string;
-  /** id of the RadioPlayer's modal. */
   target?: string;
   variant?: "default" | "accent" | "ghost" | "dashed";
 }

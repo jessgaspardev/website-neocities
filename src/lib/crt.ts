@@ -1,7 +1,3 @@
-// CRT screen effect state. The overlay markup and CSS live in
-// components/effects/CRT.astro; this module switches it on/off and
-// changes its strength by writing CSS variables on <html>.
-
 import { readStorage, writeStorage } from "./global";
 
 export type CRTIntensity = "low" | "medium" | "high" | "ultra";
@@ -29,7 +25,6 @@ export function getCRTState(): CRTState {
   };
 }
 
-/** Updates the CRT effect. Fires `crt-change` on window. */
 export function setCRT(next: Partial<CRTState>, persist: boolean = true): CRTState {
   const root = document.documentElement;
   const state = { ...getCRTState(), ...next };

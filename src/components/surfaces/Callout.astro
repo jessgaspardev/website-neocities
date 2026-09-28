@@ -1,27 +1,13 @@
 ---
-/**
- * Notice / alert banner.
- *
- * <Callout variant="warning" icon="⚠️" title="[DISPLAY_NOTICE]: BEST VIEWED ON DESKTOP" dismissible storageKey="desktop-notice">
- *   For the full experience…
- * </Callout>
- * <Callout variant="danger" title="⚠️ [SYSTEM ERROR 404]" badge="STATUS: 404 NOT FOUND" pulse />
- *
- * variant: warning | danger | success | info
- * show:    all | mobile (below 768px only) | desktop
- */
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"div"> {
   variant?: "warning" | "danger" | "success" | "info";
   title?: string;
   icon?: string;
-  /** Right-aligned chip, e.g. a status code. */
   badge?: string;
-  /** Slowly pulse the whole banner (attention grabber). */
   pulse?: boolean;
   dismissible?: boolean;
-  /** Remember dismissal in localStorage under this key. */
   storageKey?: string;
   show?: "all" | "mobile" | "desktop";
 }
@@ -165,8 +151,6 @@ const hasBody = Astro.slots.has("default");
 <script>
   import { readStorage, writeStorage } from "../../lib/global";
 
-  // Runs on first load and after every client-side page change; the marker
-  // attribute stops callouts that survived the swap from being bound twice.
   document.addEventListener("astro:page-load", () => {
     document.querySelectorAll<HTMLElement>("[data-callout]:not([data-callout-ready])").forEach((callout) => {
       callout.dataset.calloutReady = "";

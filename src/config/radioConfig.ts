@@ -11,7 +11,7 @@ export interface RadioTrack {
 }
 
 export interface RadioConfig {
-  defaultVolume: number; // 0.0 to 1.0
+  defaultVolume: number;
   autoPlay: boolean;
   tracks: RadioTrack[];
 }

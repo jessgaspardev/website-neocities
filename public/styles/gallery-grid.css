@@ -1,82 +1,5 @@
-/* 
-    You're free to edit this as you like to make your own theme!
-    (You don't need to customize every aspect of this to make your own theme, this is just a dictionary of every class/id to provide as many possible options.)
-
-    --- Lightbox ---
-
-    #lb - container for entire lightbox (image viewer)
-    #lb_wrapper - wrapper for all lightbox contents, including navigation
-    #lb_container - container for all lightbox contents
-
-    #lb_exitButton - the button used to exit the lightbox, usually the entire background
-    #lb_smallExitButton - the button used to exit the lightbox on small screens, usually an 'x' in the corner of the lightbox
-
-    #lb_imageWrapper - wrapper for image and loading graphic/text
-    #lb_image - the image viewed in the lightbox
-    .lb-noframe - class for images where the 'noframe' attribute is active
-
-    #lb_info - container for all info on the image
-    #lb_desc - lightbox image description
-    #lb_title - lightbox image title
-    #lb_tags - lightbox image tags
-    
-    .lb-nav - lightbox navigation button
-    #lb_prev - lightbox previous navigation button
-    #lb_next - lightbox next navigation button
-    .lb-hidenav - class for when 'nav' is included in 'hide' attribute to hide navigation
-
-    #lb_loading - lightbox image loading element
-
-
-    --- Gallery Grid ---
-
-    .g-grid - element containing a gallery grid
-    .g-fixedGrid - element containing a fixed gallery grid
-    .g-justifiedGrid - element containing a justified gallery grid
-    .g-justifiedGridRow - element for a row in a justified gallery grid
-    
-    .g-gridCell - a cell in the gallery grid
-    .g-gridCellImage - the image in a grid cell
-    .g-gridCellButton - the button in the grid cell that opens the lightbox (takes up the entire cell)
-    .g-gridCellEffect - a helper element in the grid cell used for effects (ex. hover effects)
-    .g-gridCellCaption - image caption in grid cell (only visible when 'captions' are enabled)
-    .g-gridCellLoading - loading element in grid cell (does not appear for justified grids)
-
-    .g-loading - text that appears while a grid is loading (justified grids only)
-    .g-noframe - class for grid cells where the 'noframe' attribute is active
-    .g-disabled - class for when accessing the lightbox is disabled in the grid
-    .g-smallScreen - class for elements that are only visible on small screens
-    .g-smallScreenHide - class for elements that are not visible on small screens
-    .g-smallFillWidth - class that tells grid cell to fill the width of the screen on small screens when enabled
-
-    .g-pageNav - container for page navigation
-    .g-pageNavButton - navigation button for pages
-    .g-pageNavNum - current page and total page count text
-    .g-pageNavPrev - previous navigation button for pages
-    .g-pageNavNext - next navigation button for pages
-
-    .g-sifterWrapper - container for both filters and sorts
-    .g-sifter - container for either filters/sorts
-    .g-sifterName - name of sifter (either 'Filters' or 'Sort)
-
-    .g-inputs - inputs for sifter
-    .g-inputWrapper - wrapper for sifter input
-
-    .g-filters - container for filter related elements
-    .g-filterInput - input for filter (checkbox input)
-    .g-filterInputOther - input for filter option for untagged images
-
-    .g-sort - container for sort related elements
-    .g-sortInput - input for sort (radio input)
-    .g-sortInputAscending - ascending sort input
-    .g-sortInputDescending - descending sort input
-    .g-sortAlphabetical - class for when alphabetical sort is selected
-
-*/
-
 :root {
     --nav-width: 40px;
-    /* Colors use the site theme tokens (src/styles/tokens.css) so the gallery follows the theme picker */
     --link-color: var(--accent);
     --link-hover-color: var(--fg-bright);
 }
@@ -102,7 +25,6 @@ body {
 	}
 }
 
-/* Lightbox */
 #lb {
     display: none;
     position: fixed;
@@ -147,7 +69,6 @@ body {
     height: calc(100dvh - 40px);
 }
 
-/* Lightbox exit buttons */
 #lb_exitButton {
     position: absolute;
     top: 0%;
@@ -183,7 +104,6 @@ body {
     content: "X";
 }
 
-/* Lightbox image */
 #lb_imageWrapper {
     position: relative;
     width: fit-content;
@@ -220,7 +140,6 @@ body {
     filter: drop-shadow(1px 1px 0px var(--fg-dim)) drop-shadow(-1px -1px 0px var(--fg-dim)) drop-shadow(1px -1px 0px var(--fg-dim)) drop-shadow(-1px 1px 0px var(--fg-dim)) 
 }
 
-/* Lightbox info box */
 #lb_info {
     display: flex;
     flex-direction: column;
@@ -290,7 +209,6 @@ body {
     }
 }
 
-/* Lightbox navigation */
 .lb-nav {
     display: none;
     z-index: 1;
@@ -356,7 +274,6 @@ body {
     }
 }
 
-/* Lightbox loading */
 #lb_loading {
     position: absolute;
     top: 0%;
@@ -383,7 +300,6 @@ body {
     color: var(--fg);
 }
 
-/* Gallery grid */
 gallery-grid {
     display: flex;
     flex-direction: column;
@@ -420,7 +336,6 @@ gallery-grid img:not(.g-gridCellImage) {
     animation: loading 1s linear infinite;
 }
 
-/* Gallery grid cell */
 .g-gridCell {
     position: relative;
     margin: 8px;
@@ -570,7 +485,6 @@ gallery-grid img:not(.g-gridCellImage) {
     }
 }
 
-/* Gallery justified grid */
 .g-justifiedGrid {
     display: flex;
     flex-direction: column;
@@ -601,7 +515,6 @@ gallery-grid img:not(.g-gridCellImage) {
     content: "Loading...";
 }
 
-/* Gallery fixed grid */
 .g-fixedGrid {
     display: flex;
     flex-wrap: wrap;
@@ -630,7 +543,6 @@ gallery-grid img:not(.g-gridCellImage) {
     border-width: 0px;
 }
 
-/* Gallery pagination */
 .g-pageNav {
     display: flex;
     justify-content: center;
@@ -668,7 +580,6 @@ gallery-grid img:not(.g-gridCellImage) {
     }
 }
 
-/* Gallery sifter */
 .g-sifterWrapper {
     display: flex;
     flex-wrap: wrap;
@@ -700,12 +611,10 @@ gallery-grid img:not(.g-gridCellImage) {
     gap: 2px;
 }
 
-/* Filters */
 .g-filterInputOther:before {
     content: "N/A"
 }
 
-/* Sorts */
 .g-sort span:not(.g-sifterName) {
     text-transform: capitalize;
 }

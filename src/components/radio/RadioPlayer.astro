@@ -1,16 +1,4 @@
 ---
-/**
- * Retro cassette radio in a pop-up window: spinning reels, spectrum
- * visualizer, LCD track display, playlist, volume, and a box to stream any
- * YouTube URL. Plays MP3 URLs and YouTube videos/live streams.
- *   <RadioPlayer />
- *   <RadioPlayer tracks={myTracks} />
- *
- * JS API (window.retroUI.radio): open, close, play, pause, toggle, next, prev,
- * setTrack(index), setVolume(0–100), addYouTubeTrack(url), removeTrack(index),
- * getTracks(), getStatus()
- * Events on window: `radio-change` { track, index, isPlaying }, `radio-viz` { ascii, isPlaying }
- */
 import Modal from "../window/Modal.astro";
 import Button from "../controls/Button.astro";
 import Badge from "../feedback/Badge.astro";
@@ -44,7 +32,6 @@ const {
     data-tracks={JSON.stringify(tracks)}
     data-playing="false"
   >
-    <!-- Cassette deck -->
     <div class="radio__deck">
       <div class="radio__cassette">
         <div class="radio__cassette-head">
@@ -95,7 +82,6 @@ const {
       </div>
     </div>
 
-    <!-- YouTube loader -->
     {
       allowCustomTracks && (
         <div class="radio__loader">
@@ -117,7 +103,6 @@ const {
       )
     }
 
-    <!-- Playlist -->
     <div class="radio__playlist">
       <div class="radio__section-head radio__playlist-head">
         <span>TRACKLIST & CUSTOM SONGS</span>
@@ -142,7 +127,6 @@ const {
     user-select: none;
   }
 
-  /* ---- Deck ---- */
   .radio__deck {
     display: flex;
     flex-direction: column;
@@ -201,7 +185,6 @@ const {
     color: var(--success);
   }
 
-  /* Reels + spectrum window */
   .radio__tape {
     display: flex;
     align-items: center;
@@ -270,7 +253,6 @@ const {
     height: 24px;
   }
 
-  /* LCD */
   .radio__lcd {
     display: flex;
     align-items: center;
@@ -312,7 +294,6 @@ const {
     white-space: nowrap;
   }
 
-  /* Controls */
   .radio__controls {
     display: flex;
     flex-direction: column;
@@ -359,7 +340,6 @@ const {
     font-size: var(--text-small);
   }
 
-  /* Loader + playlist */
   .radio__loader,
   .radio__playlist {
     padding: 10px;
@@ -429,7 +409,6 @@ const {
     gap: var(--space-1);
   }
 
-  /* Playlist rows are created by the script, so they need :global() */
   .radio__list :global(.radio__row) {
     display: flex;
     align-items: center;
@@ -685,12 +664,10 @@ const {
     let volume = 1;
     let volumeBeforeMute = 1;
 
-    // Web Audio (spectrum for MP3 tracks)
     let audioCtx: AudioContext | null = null;
     let analyser: AnalyserNode | null = null;
     let freqData: Uint8Array<ArrayBuffer> | null = null;
 
-    // YouTube IFrame API
     let ytPlayer: any = null;
     let ytApiRequested = false;
     let ytReady = false;
@@ -703,7 +680,6 @@ const {
     const isYouTube = (t?: RadioTrack) => t?.type === "youtube";
     const isModalOpen = () => !modal.hidden;
 
-    // ---------- Persistence ----------
     function loadState() {
       try {
         const custom = JSON.parse(readStorage(STORAGE.custom) || "[]");
@@ -719,7 +695,6 @@ const {
       writeStorage(STORAGE.custom, JSON.stringify(tracks.filter((t) => t.isCustom)));
     }
 
-    // ---------- Helpers ----------
     function formatTime(secs: number) {
       if (!isFinite(secs) || secs < 0) return "0:00";
       const m = Math.floor(secs / 60);
@@ -746,7 +721,6 @@ const {
       return match ? match[1] : null;
     }
 
-    // ---------- YouTube ----------
     function loadYouTubeApi() {
       if (ytApiRequested) return;
       ytApiRequested = true;
@@ -829,7 +803,6 @@ const {
       }
     }
 
-    // ---------- HTML5 audio ----------
     function setupWebAudio() {
       if (audioCtx) return;
       try {
@@ -854,7 +827,6 @@ const {
       );
     }
 
-    // ---------- Transport ----------
     function loadTrack(index: number, autoPlay = true) {
       const track = tracks[index];
       if (!track) return;
@@ -942,7 +914,6 @@ const {
       broadcast();
     }
 
-    // ---------- Custom YouTube tracks ----------
     function setLoaderStatus(text: string, state: "" | "pending" | "success" | "error", clearAfter = 0) {
       if (!els.ytStatus) return;
       els.ytStatus.textContent = text;
@@ -1008,7 +979,6 @@ const {
       renderPlaylist();
     }
 
-    // ---------- Rendering ----------
     function renderTrack() {
       const track = currentTrack();
       if (!track) return;
@@ -1071,7 +1041,6 @@ const {
       );
     }
 
-    // ---------- Visualizer ----------
     function readThemeColor() {
       vizColor = getComputedStyle(root).getPropertyValue("--fg").trim() || "#00ff66";
     }
@@ -1099,7 +1068,6 @@ const {
           analyser.getByteFrequencyData(freqData);
           for (let i = 0; i < bars; i++) drawBar(i, (freqData[i * 2] || 0) / 255, 2);
         } else if (isPlaying) {
-          // YouTube audio can't be analysed, so draw a rhythmic fake spectrum
           const t = Date.now() / 180;
           for (let i = 0; i < bars; i++) drawBar(i, Math.abs(Math.sin(t + i * 0.7) * Math.cos(t * 0.5 + i)) * 0.9, 3);
         } else {
@@ -1116,7 +1084,6 @@ const {
       vizFrame = requestAnimationFrame(draw);
     }
 
-    // ---------- Wire up ----------
     loadState();
     els.audio.volume = volume;
     setVolume(volume);

@@ -1,8 +1,4 @@
 ---
-/**
- * <Grid cols={1} md={2} gap={4}>…</Grid>        1 column, 2 from 768px
- * Breakpoints: sm 640px, md 768px, lg 1024px
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, spaceVar } from "../../lib/tone";
 
@@ -12,7 +8,6 @@ interface Props extends HTMLAttributes<"div"> {
   md?: number;
   lg?: number;
   gap?: number;
-  /** Different gap from 640px up (e.g. tighter on phones). */
   gapSm?: number;
   align?: "stretch" | "start" | "center" | "end";
 }

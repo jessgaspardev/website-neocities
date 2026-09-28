@@ -1,17 +1,10 @@
 ---
-/**
- * Thin bordered progress bar.
- * <ProgressBar value={42} />
- *
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"div"> {
-  /** 0–100 */
   value?: number;
   tone?: Tone;
-  /** Bar height in px. */
   height?: number;
   label?: string;
 }

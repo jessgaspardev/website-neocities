@@ -61,7 +61,6 @@ a:hover {
   background: var(--fg-dim);
 }
 
-/* Unordered lists use the terminal prompt (same as SectionHeader) as their bullet */
 ul {
   list-style-type: "> ";
 }
@@ -70,7 +69,6 @@ ul > li::marker {
   color: var(--accent);
 }
 
-/* Small text helpers for use outside the components */
 .text-dim { color: var(--fg-dim); }
 .text-bright { color: var(--fg-bright); }
 .text-accent { color: var(--accent); }

@@ -8,7 +8,6 @@ interface Option {
 
 interface Props extends Omit<HTMLAttributes<"select">, "value"> {
   options?: Option[];
-  /** Selected value (server-rendered). */
   value?: string;
   compact?: boolean;
 }
@@ -29,7 +28,6 @@ const { options, value, compact = false, class: className, ...rest } = Astro.pro
     border: 1px solid var(--border);
     border-radius: var(--radius);
     appearance: none;
-    /* Chevron drawn from two gradients so it follows the theme colors */
     background:
       linear-gradient(45deg, transparent 50%, var(--fg-dim) 50%) right 12px center / 5px 5px no-repeat,
       linear-gradient(-45deg, transparent 50%, var(--fg-dim) 50%) right 7px center / 5px 5px no-repeat,
@@ -57,7 +55,6 @@ const { options, value, compact = false, class: className, ...rest } = Astro.pro
     font-family: var(--font);
   }
 
-  /* Fully styled dropdown in browsers with customizable <select> */
   @supports (appearance: base-select) {
     .select,
     .select::picker(select) {

@@ -1,10 +1,4 @@
 ---
-/**
- * Preformatted block for ASCII art, logs or code.
- *
- * <AsciiBlock text={logoArt} />                       boxed
- * <AsciiBlock text={bigTitle} bare tone="accent" />   no box (e.g. a giant ASCII heading)
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 
@@ -12,7 +6,6 @@ interface Props extends HTMLAttributes<"pre"> {
   text?: string;
   bare?: boolean;
   tone?: Tone;
-  /** Allow selecting/copying the text (off for decorative art). */
   selectable?: boolean;
   size?: "sm" | "md";
 }

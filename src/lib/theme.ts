@@ -1,6 +1,3 @@
-// Theme registry for <ThemeSelect>. The colors themselves live in
-// styles/tokens.css — this file only lists which themes exist.
-
 import { readStorage, writeStorage } from "./global";
 
 export interface RetroTheme {

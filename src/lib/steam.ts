@@ -1,16 +1,10 @@
-// Steam playtime stats via the strawberrysnails steam-widgets worker
-// (https://strawberrysnails.github.io/steam-widgets/), which proxies the
-// Steam Web API so no API key is needed client-side. Used by <GameActivity>.
-
 export interface SteamGame {
   name: string;
-  /** Total playtime in hours, e.g. "33.4". */
   hours: string;
 }
 
 const WORKER_URL = "https://api.strawberryjam.workers.dev/api";
 
-/** Last played or most played game for a public Steam profile, or null. */
 export async function fetchSteamGame(kind: "lastplayed" | "mostplayed", steamId: string): Promise<SteamGame | null> {
   if (!steamId) return null;
   try {
@@ -24,7 +18,6 @@ export async function fetchSteamGame(kind: "lastplayed" | "mostplayed", steamId:
 
 const iconCache: Record<string, string> = {};
 
-/** Look up cover art by game name on RAWG (needs your own free API key). */
 export async function fetchGameArtByName(gameName: string, rawgKey: string): Promise<string> {
   const key = gameName.toLowerCase().trim();
   if (!key || !rawgKey) return "";
