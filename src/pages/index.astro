@@ -3,8 +3,10 @@ import Layout from "../layouts/Layout.astro";
 
 import { Image } from "astro:assets";
 import honestwork from "../assets/images/honestwork.jpg";
-import alienPointing from "../assets/gifs/alienpointing.gif";
 import Section from "@/components/surfaces/Section.astro";
+import Card from "@/components/surfaces/Card.astro";
+import SectionHeader from "@/components/surfaces/SectionHeader.astro";
+import Callout from "@/components/surfaces/Callout.astro";
 ---
 
 <Layout>
@@ -19,13 +21,17 @@ import Section from "@/components/surfaces/Section.astro";
       web designer and developer, and this is my place to showcase my work and
       share more about me!
     </p>
-    <Image
+    <marquee><Image
       src={honestwork}
       alt="It ain't much but it's honest work"
       class="image"
-    />
+    /></marquee>
 
-    <Image src={alienPointing} alt="Alien Pointing Up" />
+    <Card variant="inset">
+      <SectionHeader title="// CHANGELOG" size="sm" meta="SITE UPDATES"/>
+      <Callout variant="info" title="REDESIGN TO A TERMINAL STYLE">SEPTEMBER 28TH, 2026</Callout>
+      <Callout variant="success" icon="✓" title="WEBSITE LAUNCHED!:D">SEPTEMBER 18TH, 2026</Callout>
+    </Card>
   </Section>
 </Layout>
 

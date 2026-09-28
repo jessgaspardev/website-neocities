@@ -29,6 +29,8 @@ import BaseHead from "@/components/global/BaseHead.astro";
 import Navigation from "@/components/global/Navigation.astro";
 import Socials from "@/components/widgets/Socials.astro";
 import Status from "@/components/widgets/Status.astro";
+import Artifacts from "@/components/widgets/Artifacts.astro";
+import LinkMe from "@/components/widgets/LinkMe.astro";
 
 const { developer } = PORTFOLIO_DATA;
 
@@ -96,6 +98,10 @@ const {
 
               <Socials />
 
+              <Artifacts />
+
+              <LinkMe />
+
               <KeyValueList
                 divider
                 title="WEBSITE SPEC"
@@ -120,9 +126,10 @@ const {
 
               <GameActivity />
 
+              <Letterboxd />
+
               <Goodreads />
 
-              <Letterboxd />
             </Card>
           </SplitLayout>
         </Stack>
@@ -146,7 +153,7 @@ const {
     padding: 8px;
   }
 
-  /* Wrapper that only exists to carry transition:persist; no box of its own. */
+  /* wrapper to carry transition:persist */
   .persist {
     display: contents;
   }

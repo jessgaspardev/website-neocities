@@ -1,15 +1,4 @@
 ---
-/**
- * Terminal-style button. Renders an <a> when `href` is set.
- *
- * <Button>Default</Button>
- * <Button variant="primary" size="lg" type="submit">SEND PAYLOAD [ENTER]</Button>
- * <Button variant="accent" href="/cv.pdf"><span slot="icon">📄</span> CV</Button>
- * <Button variant="dashed" block align="start">🕹️ pong.sh</Button>
- *
- * variant: default | primary | accent | ghost | dashed | danger
- * size:    sm (header/toolbar) | md | lg
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 
@@ -20,11 +9,9 @@ interface Props extends Omit<HTMLAttributes<"button">, "type"> {
   size?: "sm" | "md" | "lg";
   /** Full width. */
   block?: boolean;
-  /** Content alignment (use "start" for menu-like buttons). */
   align?: "center" | "start";
-  /** Soft outer glow in the theme color. */
   glow?: boolean;
-  /** Override the text color. */
+  /** Overrides the text color. */
   tone?: Tone;
   type?: "button" | "submit" | "reset";
   href?: string;

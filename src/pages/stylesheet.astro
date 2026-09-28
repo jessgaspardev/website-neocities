@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import ColorSwatches from "@/components/content/ColorSwatches.astro";
 import Field from "@/components/controls/Field.astro";
 import Input from "@/components/controls/Input.astro";
 import Range from "@/components/controls/Range.astro";
@@ -190,19 +189,6 @@ const bigAscii = `██████╗ ███████╗█████�
     <AsciiBlock
       text={"$ npm run build\n✓ 0 tailwind classes found"}
       selectable
-    />
-    <ColorSwatches
-      colors={[
-        "var(--bg)",
-        "var(--bg-card)",
-        "var(--border)",
-        "var(--fg-dim)",
-        "var(--fg)",
-        "var(--fg-bright)",
-        "var(--accent)",
-        "var(--accent-2)",
-      ]}
-      label="THEME TOKENS:"
     />
   </Section>
 </Layout>

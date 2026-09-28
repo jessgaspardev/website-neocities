@@ -5,9 +5,10 @@ import SectionHeader from "@/components/surfaces/SectionHeader.astro";
 import { Image } from "astro:assets";
 import about from "../assets/images/aboutpic.jpg";
 import Card from "@/components/surfaces/Card.astro";
+import Grid from "@/components/layout/Grid.astro";
 ---
 
-<Layout title="About" description="Learn more about me.">
+<Layout title="about" description="Learn more about me.">
   <Section
     id="about"
     title="ABOUT.HTML"
@@ -25,27 +26,30 @@ import Card from "@/components/surfaces/Card.astro";
     <div class="details">
       <Card variant="inset">
         <SectionHeader size="sm" icon="📟" title="DETAILS" />
-        <Image src={about} alt="Me" class="image" />
-        <ul>
-          <li>my name is jess and my pronouns are she/her;</li>
-          <li>I was born in 1994 on June 4th;</li>
-          <li>
-            Yes, I'm a gemini, but please don't hold that against me!
-            #NotAllGemini;
-          </li>
-          <li>I'm portuguese;</li>
-          <li>I'm a cis lesbian;</li>
-          <li>
-            I'm an introvert and quite shy when meeting new people (even
-            online), but once I'm comfortable with someone I love to hang out
-            and talk;
-          </li>
-          <li>I have 2 cats, 1 dog and 1 goat;</li>
-          <li>
-            Main hobbies: gaming, drawing & painting, reading, watching movies,
-            watching women's basketball, coding
-          </li>
-        </ul>
+        <Grid cols={1} md={2} gap={4}>
+          <Image src={about} alt="Me" class="image" />
+          <ul>
+            <li>my name is jess and my pronouns are she/her;</li>
+            <li>I was born in 1994 on June 4th;</li>
+            <li>
+              Yes, I'm a gemini, but please don't hold that against me!
+              #NotAllGemini;
+            </li>
+            <li>I'm portuguese;</li>
+            <li>I'm a cis lesbian;</li>
+            <li>
+              I'm an introvert and quite shy when meeting new people (even
+              online), but once I'm comfortable with someone I love to hang out
+              and talk;
+            </li>
+            <li>I have 2 cats, 1 dog and 1 goat;</li>
+            <li>
+              Main hobbies: gaming, drawing & painting, reading, watching movies,
+              watching women's basketball, coding
+            </li>
+          </ul>
+        </Grid>
+        
       </Card>
     </div>
   </Section>

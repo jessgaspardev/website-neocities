@@ -1,0 +1,12 @@
+---
+import { Image } from "astro:assets";
+import SectionHeader from "../surfaces/SectionHeader.astro";
+import Textarea from "../controls/Textarea.astro";
+import sitebutton from "/public/img/sitebutton.gif"
+---
+
+<SectionHeader size="sm" icon="📁" title="LINK ME :)" meta="LINKS" />
+<Image src={sitebutton} alt="" />
+<Textarea readonly rows={2}>
+    <a href="https://jessgaspar.dev" target="_blank"><img src="https://i.ibb.co/HpB65VXf/sitebutton.gif" alt="jessgaspar.dev"></a>
+</Textarea>

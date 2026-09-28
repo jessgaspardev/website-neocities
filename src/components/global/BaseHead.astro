@@ -28,9 +28,7 @@ const {
     <ThemeScript />
     <ClientRouter />
     <script>
-      // On navigation the client router replaces <html>'s attributes with the new
-      // page's. Theme and CRT settings live there (set once by inline scripts),
-      // so carry them over or the page flashes back to the defaults.
+      // carry over settings so the page doesn't flash
       const KEEP = ["data-theme", "data-crt", "data-crt-intensity", "data-crt-flicker", "style"];
 
       document.addEventListener("astro:before-swap", (event) => {

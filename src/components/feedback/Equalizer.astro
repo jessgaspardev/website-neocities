@@ -1,6 +1,6 @@
 ---
 /**
- * Four tiny bouncing bars ("now playing" indicator).
+ * Four tiny bouncing bars
  * <Equalizer active />
  *
  * Toggle from JS: el.dataset.active = "true" | "false"
@@ -11,7 +11,7 @@ import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 interface Props extends HTMLAttributes<"span"> {
   active?: boolean;
   tone?: Tone;
-  /** Height in px. */
+  /** Height in px */
   height?: number;
 }
 

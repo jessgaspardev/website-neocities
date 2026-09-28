@@ -3,8 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import Section from "@/components/surfaces/Section.astro";
 import SectionHeader from "@/components/surfaces/SectionHeader.astro";
 import Card from "@/components/surfaces/Card.astro";
-import Badge from "@/components/feedback/Badge.astro";
 import Button from "@/components/controls/Button.astro";
+
+import peachycabinet from "../assets/buttons/cabinetbutton.png";
 ---
 
 <Layout
@@ -66,7 +67,7 @@ import Button from "@/components/controls/Button.astro";
     </Card>
 
     <Card variant="inset">
-      <SectionHeader size="sm" title="// COOL WEBSITES THAT INSPIRE ME" />
+      <SectionHeader size="sm" title="// COOL WEBSITES " />
       <div class="buttons-gallery">
         <a href="http://laurabarros.neocities.org"
           ><img
@@ -86,6 +87,10 @@ import Button from "@/components/controls/Button.astro";
             alt="petrapixel"
           /></a
         >
+        <a href="https://peachyvoid.com/" target="_blank">
+          <img src=`${peachycabinet.src}`
+              alt="Peachy's Curiosity Cabinet" >
+        </a>
       </div>
     </Card>
   </Section>

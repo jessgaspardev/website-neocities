@@ -3,18 +3,31 @@ import Card from "../surfaces/Card.astro";
 import SectionHeader from "../surfaces/SectionHeader.astro";
 ---
 
-
 <Card interactive="accent">
-    <SectionHeader size="sm" title="STATUS" />
-    <div id="statuscafe">
-        <div id="statuscafe-username"></div><div id="statuscafe-content"></div>
+  <SectionHeader size="sm" title="STATUS" />
+  <div id="statuscafe">
+    <div id="statuscafe-username"></div><div id="statuscafe-content"></div>
+  </div>
+  <script src="https://status.cafe/current-status.js?name=gasparjs" defer
+  ></script>
+  <div>
+    <div class="mood">
+      <p>Feeling:</p>
+      <a href="https://www.imood.com/users/gasparjs"
+        ><img
+          src="https://moods.imood.com/display/uname-gasparjs/fg-000000/bg-f0c040/imood.gif"
+          alt="The current mood of gasparjs at www.imood.com"
+        />
+      </a>
     </div>
-    <script src="https://status.cafe/current-status.js?name=gasparjs" defer
-    ></script>    
+  </div>
 </Card>
 
-
 <style>
+  p {
+    font-size: var(--text-xs);
+  }
+  
   #statuscafe {
     padding: 0.5em;
   }
@@ -24,5 +37,12 @@ import SectionHeader from "../surfaces/SectionHeader.astro";
   }
   #statuscafe-content {
     font-size: var(--text-xs);
+  }
+
+  .mood {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
   }
 </style>

@@ -1,17 +1,6 @@
 ---
 /**
- * Compact "label ........ value" list (the sidebar "CONTENT SPEC" block).
- *
- * <KeyValueList title="CONTENT SPEC" items={[
- *   { label: "Active Collabs:", value: 3 },
- *   { label: "Experience:", value: "7+ Years", tone: "success" },
- *   { label: "Visits:", slot: "visits" },
- * ]}>
- *   <HitCounter slot="visits" />
- * </KeyValueList>
- *
- * An item with `slot` renders the matching named slot as its value, falling
- * back to `value` when that slot isn't provided.
+ * Compact "label ........ value" list (the sidebar "WEBSITE SPEC" block).
  */
 import type { HTMLAttributes } from "astro/types";
 import { toneVar, type Tone } from "../../lib/tone";
@@ -26,7 +15,6 @@ interface Item {
 interface Props extends HTMLAttributes<"div"> {
   items: Item[];
   title?: string;
-  /** Draw a divider line above the list. */
   divider?: boolean;
 }
 

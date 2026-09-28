@@ -1,0 +1,38 @@
+---
+import SectionHeader from "../surfaces/SectionHeader.astro";
+import { Image } from "astro:assets";
+// buttons
+import bestpc from "../../assets/blinkies/bestpc.gif";
+import bookmark from "../../assets/blinkies/bookmark-this-page.gif";
+import linux from "../../assets/blinkies/linux.jpg";
+import responsive from "../../assets/blinkies/responsivesite.jpg";
+import vscode from "../../assets/blinkies/vscode.png";
+import stand from "../../assets/blinkies/standwith.png";
+// blinkies
+import blles from "../../assets/blinkies/blles.gif";
+import tiktok from "../../assets/blinkies/deletetiktok.webp";
+import introvert from "../../assets/blinkies/introvert.gif";
+import trans from "../../assets/blinkies/transrights.gif";
+// stamps
+import iloveoldweb from "../../assets/blinkies/iloveoldweb.png";
+---
+
+<SectionHeader size="sm" icon="📁" title="ARTIFACTS" meta="BUTTONS" />
+<div>
+    <!-- BUTTONS -->
+    <Image src={bestpc} alt="Best Viewed On PC" />
+    <Image src={bookmark} alt="Bookmark This Page" />
+    <Image src={linux} alt="Linux Now!" />
+    <Image src={responsive} alt="Responsive Website" />
+    <Image src={vscode} alt="Made With VS Code" />
+    <Image src={stand} alt="Stand With Palestine" />
+    <br />
+    <!-- BLINKIES -->
+    <Image src={blles} alt="Lesbian Pride" />
+    <Image src={tiktok} alt="Delete TikTok" width={150} />
+    <Image src={introvert} alt="Introvert" />
+    <Image src={trans} alt="Trans Rights" />
+    <br />
+    <!-- STAMPS -->
+    <Image src={iloveoldweb} alt="I Love The Old Web" />
+</div>

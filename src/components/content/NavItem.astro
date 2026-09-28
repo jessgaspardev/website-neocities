@@ -1,21 +1,13 @@
 ---
-/**
- * One row in a <NavList>, laid out like a radio tracklist row:
- * `num.  Title  (meta)`. A link when `href` is set, otherwise a button
- * (e.g. to open a modal via data-modal-open="id").
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle, toneVar, type Tone } from "../../lib/tone";
 
 interface Props extends Omit<HTMLAttributes<"a">, "type"> {
   href?: string;
-  /** Leading number, written as-is (e.g. "1."). */
   num?: string;
-  /** Dim trailing text, shown in parentheses. */
   meta?: string;
   /** Title color (default: bright). */
   tone?: Tone;
-  /** Highlight as the current page/section (default: `href` matches the current URL). */
   active?: boolean;
   /** Dashed outline — used for "launch" actions. */
   dashed?: boolean;
@@ -23,7 +15,6 @@ interface Props extends Omit<HTMLAttributes<"a">, "type"> {
 
 const trimSlash = (path: string) => path.replace(/\/+$/, "") || "/";
 const current = trimSlash(Astro.url.pathname);
-// "/" only matches the home page; other links also match their subpages
 const isCurrent = (path: string) =>
   path.startsWith("/") && (path === "/" ? current === "/" : current === path || current.startsWith(`${path}/`));
 

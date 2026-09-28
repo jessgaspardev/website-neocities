@@ -1,14 +1,9 @@
 ---
-/**
- * Centered page-width wrapper (the theme uses 72rem / 1152px).
- * <Container maxWidth="60rem">…</Container>
- */
 import type { HTMLAttributes } from "astro/types";
 import { mergeStyle } from "../../lib/tone";
 
 interface Props extends HTMLAttributes<"div"> {
   maxWidth?: string;
-  /** Horizontal padding. Defaults to 8px on phones, 16px from 640px. */
   gutter?: boolean;
 }
 
